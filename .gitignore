@@ -31,4 +31,4 @@ build/
 
 ### VS Code ###
 .vscode/
-src/test/resources/test_application.properties
+test_application.properties
