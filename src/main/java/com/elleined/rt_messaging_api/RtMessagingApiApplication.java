@@ -1,8 +1,10 @@
 package com.elleined.rt_messaging_api;
 
+import net.datafaker.Faker;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -14,5 +16,10 @@ public class RtMessagingApiApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(RtMessagingApiApplication.class, args);
+	}
+
+	@Bean
+	public Faker faker() {
+		return new Faker();
 	}
 }
