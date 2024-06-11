@@ -11,10 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(
-        name = "tbl_group_chat",
-        indexes = @Index(name = "created_at_idx", columnList = "created_at")
-)
+@Table(name = "tbl_group_chat")
 @Getter
 @Setter
 @SuperBuilder

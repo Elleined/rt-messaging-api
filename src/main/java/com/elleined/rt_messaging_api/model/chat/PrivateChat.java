@@ -8,14 +8,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 @Entity
-@Table(
-        name = "tbl_private_chat",
-        indexes = @Index(name = "created_at_idx", columnList = "created_at")
-)
-@PrimaryKeyJoinColumn(
-        name = "id",
-        referencedColumnName = "id"
-)
+@Table(name = "tbl_private_chat")
 @Getter
 @Setter
 @SuperBuilder

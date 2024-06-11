@@ -1,4 +1,4 @@
-package com.elleined.rt_messaging_api.model.chat;
+package com.elleined.rt_messaging_api.model.reaction;
 
 import com.elleined.rt_messaging_api.model.PrimaryKeyIdentity;
 import com.elleined.rt_messaging_api.model.message.Message;
@@ -9,20 +9,16 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import java.util.List;
-
-
 @Entity
 @Table(
-        name = "tbl_chat",
+        name = "tbl_reaction",
         indexes = @Index(name = "created_at_idx", columnList = "created_at")
 )
-@Inheritance(strategy = InheritanceType.JOINED)
 @Getter
 @Setter
-@NoArgsConstructor
 @SuperBuilder
-public class Chat extends PrimaryKeyIdentity {
+@NoArgsConstructor
+public class Reaction extends PrimaryKeyIdentity {
 
     @ManyToOne(optional = false)
     @JoinColumn(
@@ -33,6 +29,29 @@ public class Chat extends PrimaryKeyIdentity {
     )
     private User creator;
 
-    @OneToMany(mappedBy = "chat")
-    private List<Message> messages;
+    @Column(
+            name = "emoji",
+            nullable = false
+    )
+    @Enumerated(EnumType.STRING)
+    private Emoji emoji;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(
+            name = "message_id",
+            referencedColumnName = "id",
+            nullable = false,
+            updatable = false
+    )
+    private Message message;
+
+    public enum Emoji {
+        LIKE,
+        HEART,
+        CARE,
+        HAHA,
+        WOW,
+        SAD,
+        ANGRY
+    }
 }
