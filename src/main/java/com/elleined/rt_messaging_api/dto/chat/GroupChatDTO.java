@@ -15,5 +15,5 @@ import java.util.Set;
 public class GroupChatDTO extends ChatDTO {
     private String name;
     private String picture;
-    private Set<UserDTO> receivers;
+    private Set<Integer> receiverIds;
 }

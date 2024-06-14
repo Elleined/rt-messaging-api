@@ -12,16 +12,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 
-@Mapper(
-        componentModel = "spring",
-        uses = {
-                PrivateChatMapper.class,
-                GroupChatMapper.class,
-                MentionMapper.class,
-                MessageMapper.class,
-                ReactionMapper.class
-        }
-)
+@Mapper(componentModel = "spring")
 public interface UserMapper extends CustomMapper<User, UserDTO> {
 
     @Override
@@ -30,11 +21,11 @@ public interface UserMapper extends CustomMapper<User, UserDTO> {
             @Mapping(target = "createdAt", source = "createdAt"),
             @Mapping(target = "name", source = "name"),
             @Mapping(target = "image", source = "image"),
-            @Mapping(target = "privateChats", source = "privateChats"),
-            @Mapping(target = "groupChats", source = "groupChats"),
-            @Mapping(target = "messages", source = "messages"),
-            @Mapping(target = "reactions", source = "reactions"),
-            @Mapping(target = "receivedMentions", source = "receivedMentions"),
+            @Mapping(target = "privateChatIds", expression = "java(user.privateChatIds())"),
+            @Mapping(target = "groupChatIds", expression = "java(user.groupChatIds())"),
+            @Mapping(target = "messageIds", expression = "java(user.messageIds())"),
+            @Mapping(target = "reactionIds", expression = "java(user.reactionIds())"),
+            @Mapping(target = "receivedMentionIds", expression = "java(user.receivedMentionIds())"),
     })
     UserDTO toDTO(User user);
 

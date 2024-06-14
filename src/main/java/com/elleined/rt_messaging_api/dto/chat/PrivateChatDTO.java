@@ -11,5 +11,5 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 public class PrivateChatDTO extends ChatDTO {
-    private UserDTO receiver;
+    private int receiverId;
 }

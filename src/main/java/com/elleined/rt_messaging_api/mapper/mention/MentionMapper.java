@@ -18,9 +18,9 @@ public interface MentionMapper extends CustomMapper<Mention, MentionDTO> {
     @Mappings({
             @Mapping(target = "id", source = "id"),
             @Mapping(target = "createdAt", source = "createdAt"),
-            @Mapping(target = "creator", source = "creator"),
-            @Mapping(target = "mentionedUser", source = "mentionedUser"),
-            @Mapping(target = "message", source = "message"),
+            @Mapping(target = "creatorId", source = "creator.id"),
+            @Mapping(target = "mentionedUserId", source = "mentionedUser.id"),
+            @Mapping(target = "messageId", source = "message.id"),
     })
     MentionDTO toDTO(Mention mention);
 

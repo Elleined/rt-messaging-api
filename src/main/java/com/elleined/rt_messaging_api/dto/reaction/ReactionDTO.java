@@ -14,7 +14,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 public class ReactionDTO extends DTO {
-    private UserDTO creator;
+    private int creatorId;
     private Reaction.Emoji emoji;
-    private MessageDTO message;
+    private int messageId;
 }

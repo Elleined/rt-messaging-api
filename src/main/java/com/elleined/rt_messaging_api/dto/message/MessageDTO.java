@@ -18,10 +18,10 @@ import java.util.List;
 @SuperBuilder
 @NoArgsConstructor
 public class MessageDTO extends DTO {
-    private UserDTO creator;
+    private int creatorId;
     private String content;
     private Message.ContentType contentType;
-    private ChatDTO chat;
-    private List<ReactionDTO> reactions;
-    private List<MentionDTO> mentions;
+    private int chatId;
+    private List<Integer> reactionIds;
+    private List<Integer> mentionIds;
 }

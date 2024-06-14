@@ -19,12 +19,6 @@ import java.util.List;
 
 @Mapper(
         componentModel = "spring",
-        uses = {
-                PrivateChatMapper.class,
-                GroupChatMapper.class,
-                ReactionMapper.class,
-                MentionMapper.class
-        },
         imports = {
                 Message.ContentType.class
         }
@@ -35,6 +29,12 @@ public interface MessageMapper extends CustomMapper<Message, MessageDTO> {
     @Mappings({
             @Mapping(target = "id", source = "id"),
             @Mapping(target = "createdAt", source = "createdAt"),
+            @Mapping(target = "creatorId", source = "creator.id"),
+            @Mapping(target = "content", source = "content"),
+            @Mapping(target = "contentType", source = "contentType"),
+            @Mapping(target = "chatId", source = "chat.id"),
+            @Mapping(target = "reactionIds", expression = "java(message.reactionIds())"),
+            @Mapping(target = "mentionIds", expression = "java(message.mentionIds())"),
     })
     MessageDTO toDTO(Message message);
 

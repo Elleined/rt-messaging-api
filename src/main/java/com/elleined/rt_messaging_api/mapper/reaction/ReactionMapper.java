@@ -23,9 +23,9 @@ public interface ReactionMapper extends CustomMapper<Reaction, ReactionDTO> {
     @Mappings({
             @Mapping(target = "id", source = "id"),
             @Mapping(target = "createdAt", source = "createdAt"),
-            @Mapping(target = "creator", source = "creator"),
+            @Mapping(target = "creatorId", source = "creator.id"),
             @Mapping(target = "emoji", source = "emoji"),
-            @Mapping(target = "message", source = "message"),
+            @Mapping(target = "messageId", source = "message.id"),
     })
     ReactionDTO toDTO(Reaction reaction);
 

@@ -1,11 +1,6 @@
 package com.elleined.rt_messaging_api.dto.user;
 
 import com.elleined.rt_messaging_api.dto.DTO;
-import com.elleined.rt_messaging_api.dto.chat.GroupChatDTO;
-import com.elleined.rt_messaging_api.dto.chat.PrivateChatDTO;
-import com.elleined.rt_messaging_api.dto.mention.MentionDTO;
-import com.elleined.rt_messaging_api.dto.message.MessageDTO;
-import com.elleined.rt_messaging_api.dto.reaction.ReactionDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,9 +16,9 @@ import java.util.Set;
 public class UserDTO extends DTO {
     private String name;
     private String image;
-    private List<PrivateChatDTO> privateChats;
-    private Set<GroupChatDTO> groupChats;
-    private List<MessageDTO> messages;
-    private List<ReactionDTO> reactions;
-    private List<MentionDTO> receivedMentions;
+    private List<Integer> privateChatIds;
+    private Set<Integer> groupChatIds;
+    private List<Integer> messageIds;
+    private List<Integer> reactionIds;
+    private List<Integer> receivedMentionIds;
 }

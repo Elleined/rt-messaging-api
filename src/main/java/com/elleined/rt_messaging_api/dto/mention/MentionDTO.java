@@ -13,7 +13,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 public class MentionDTO extends DTO {
-    private UserDTO creator;
-    private UserDTO mentionedUser;
-    private MessageDTO message;
+    private int creatorId;
+    private int mentionedUserId;
+    private int messageId;
 }

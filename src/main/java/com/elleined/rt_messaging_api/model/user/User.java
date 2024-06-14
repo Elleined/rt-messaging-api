@@ -14,6 +14,7 @@ import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(
@@ -49,4 +50,35 @@ public class User extends PrimaryKeyIdentity {
 
     @OneToMany(mappedBy = "mentionedUser")
     private List<Mention> receivedMentions;
+
+    public List<Integer> privateChatIds() {
+        return this.getPrivateChats().stream()
+                .map(PrimaryKeyIdentity::getId)
+                .toList();
+    }
+
+    public Set<Integer> groupChatIds() {
+        return this.getGroupChats().stream()
+                .map(PrimaryKeyIdentity::getId)
+                .collect(Collectors.toSet());
+    }
+
+    public List<Integer> messageIds() {
+        return this.getMessages().stream()
+                .map(PrimaryKeyIdentity::getId)
+                .toList();
+    }
+
+    public List<Integer> reactionIds() {
+        return this.getReactions().stream()
+                .map(PrimaryKeyIdentity::getId)
+                .toList();
+    }
+
+    public List<Integer> receivedMentionIds() {
+        return this.getReceivedMentions().stream()
+                .map(PrimaryKeyIdentity::getId)
+                .toList();
+    }
+
 }

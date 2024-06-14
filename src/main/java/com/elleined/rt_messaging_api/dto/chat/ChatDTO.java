@@ -15,6 +15,6 @@ import java.util.List;
 @SuperBuilder
 @NoArgsConstructor
 public class ChatDTO extends DTO {
-    private UserDTO creator;
-    private List<MessageDTO> messages;
+    private int creatorId;
+    private List<Integer> messageIds;
 }

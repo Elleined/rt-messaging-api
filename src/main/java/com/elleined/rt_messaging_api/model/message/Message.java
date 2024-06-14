@@ -67,4 +67,17 @@ public class Message extends PrimaryKeyIdentity {
         LOCATION,
         VOICE_MESSAGE
     }
+
+    public List<Integer> reactionIds() {
+        return this.getReactions().stream()
+                .map(PrimaryKeyIdentity::getId)
+                .toList();
+    }
+
+    public List<Integer> mentionIds() {
+        return this.getMentions().stream()
+                .map(PrimaryKeyIdentity::getId)
+                .toList();
+    }
+
 }

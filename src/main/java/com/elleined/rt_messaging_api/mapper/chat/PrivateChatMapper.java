@@ -17,8 +17,9 @@ public interface PrivateChatMapper extends CustomMapper<PrivateChat, PrivateChat
     @Mappings({
             @Mapping(target = "id", source = "id"),
             @Mapping(target = "createdAt", source = "createdAt"),
-            @Mapping(target = "creator", source = "creator"),
-            @Mapping(target = "messages", source = "messages"),
+            @Mapping(target = "creatorId", source = "creator.id"),
+            @Mapping(target = "messageIds", expression = "java(privateChat.messageIds())"),
+            @Mapping(target = "receiverId", source = "receiver.id")
     })
     PrivateChatDTO toDTO(PrivateChat privateChat);
 

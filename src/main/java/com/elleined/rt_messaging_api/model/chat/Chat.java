@@ -31,4 +31,10 @@ public abstract class Chat extends PrimaryKeyIdentity {
 
     @OneToMany(mappedBy = "chat")
     private List<Message> messages;
+
+    public List<Integer> messageIds() {
+        return this.getMessages().stream()
+                .map(PrimaryKeyIdentity::getId)
+                .toList();
+    }
 }
