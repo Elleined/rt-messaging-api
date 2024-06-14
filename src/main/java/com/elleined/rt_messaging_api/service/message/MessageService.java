@@ -6,9 +6,11 @@ import com.elleined.rt_messaging_api.model.message.Message;
 import com.elleined.rt_messaging_api.model.user.User;
 import com.elleined.rt_messaging_api.service.CustomService;
 
+import java.awt.print.Pageable;
 import java.util.List;
 
 public interface MessageService extends CustomService<Message> {
+    List<Message> getAllMessage(Chat chat, Pageable pageable);
     Message save(User creator,
                  String content,
                  Message.ContentType contentType,

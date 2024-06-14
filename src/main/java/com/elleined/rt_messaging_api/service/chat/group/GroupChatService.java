@@ -13,8 +13,13 @@ public interface GroupChatService extends ChatService<GroupChat> {
                    String picture,
                    Set<User> receivers);
 
+    void changeName(GroupChat groupChat, String name);
+    void changePicture(GroupChat groupChat, String picture);
+
+    void leaveGroup(GroupChat groupChat, User currentUser);
 
     void addReceiver(GroupChat groupChat, User receiver);
+    void removeParticipant(User currentUser, GroupChat groupChat, User participant);
     default void addAllReceiver(GroupChat groupChat, Set<User> receivers) {
         receivers.forEach(receiver -> this.addReceiver(groupChat, receiver));
     }
