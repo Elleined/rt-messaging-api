@@ -13,10 +13,6 @@ import org.mapstruct.Mappings;
 
 @Mapper(
         componentModel = "spring",
-        uses = {
-                UserMapper.class,
-                MessageMapper.class
-        },
         imports = {
                 Reaction.Emoji.class
         }

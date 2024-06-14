@@ -12,13 +12,7 @@ import org.mapstruct.Mappings;
 
 import java.util.Set;
 
-@Mapper(
-        componentModel = "spring",
-        uses = {
-                UserMapper.class,
-                MessageMapper.class
-        }
-)
+@Mapper(componentModel = "spring")
 public interface GroupChatMapper extends CustomMapper<GroupChat, GroupChatDTO> {
 
     @Override

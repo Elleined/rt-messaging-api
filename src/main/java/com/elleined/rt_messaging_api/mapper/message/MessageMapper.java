@@ -20,7 +20,6 @@ import java.util.List;
 @Mapper(
         componentModel = "spring",
         uses = {
-                UserMapper.class,
                 PrivateChatMapper.class,
                 GroupChatMapper.class,
                 ReactionMapper.class,

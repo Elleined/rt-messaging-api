@@ -10,13 +10,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 
-@Mapper(
-        componentModel = "spring",
-        uses = {
-                UserMapper.class,
-                MessageMapper.class
-        }
-)
+@Mapper(componentModel = "spring")
 public interface PrivateChatMapper extends CustomMapper<PrivateChat, PrivateChatDTO> {
 
     @Override
