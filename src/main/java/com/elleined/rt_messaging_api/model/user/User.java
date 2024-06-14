@@ -32,6 +32,9 @@ public class User extends PrimaryKeyIdentity {
     )
     private String name;
 
+    @Column(name = "image")
+    private String image;
+
     @OneToMany(mappedBy = "receiver")
     private List<PrivateChat> privateChats; // Receive private chat. Basically created chats are not bidirectional
 

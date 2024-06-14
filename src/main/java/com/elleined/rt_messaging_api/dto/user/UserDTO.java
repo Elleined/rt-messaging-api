@@ -1,5 +1,6 @@
 package com.elleined.rt_messaging_api.dto.user;
 
+import com.elleined.rt_messaging_api.dto.DTO;
 import com.elleined.rt_messaging_api.dto.chat.GroupChatDTO;
 import com.elleined.rt_messaging_api.dto.chat.PrivateChatDTO;
 import com.elleined.rt_messaging_api.dto.mention.MentionDTO;
@@ -17,7 +18,7 @@ import java.util.Set;
 @Setter
 @SuperBuilder
 @NoArgsConstructor
-public class UserDTO {
+public class UserDTO extends DTO {
     private String name;
     private List<PrivateChatDTO> privateChats;
     private Set<GroupChatDTO> groupChats;
