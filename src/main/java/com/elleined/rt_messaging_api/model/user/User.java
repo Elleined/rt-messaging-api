@@ -1,7 +1,6 @@
 package com.elleined.rt_messaging_api.model.user;
 
 import com.elleined.rt_messaging_api.model.PrimaryKeyIdentity;
-import com.elleined.rt_messaging_api.model.chat.Chat;
 import com.elleined.rt_messaging_api.model.chat.GroupChat;
 import com.elleined.rt_messaging_api.model.chat.PrivateChat;
 import com.elleined.rt_messaging_api.model.mention.Mention;
@@ -26,6 +25,7 @@ import java.util.Set;
 @SuperBuilder
 @NoArgsConstructor
 public class User extends PrimaryKeyIdentity {
+
     @Column(
             name = "name",
             nullable = false

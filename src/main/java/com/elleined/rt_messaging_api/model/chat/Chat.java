@@ -13,16 +13,12 @@ import java.util.List;
 
 
 @Entity
-@Table(
-        name = "tbl_chat",
-        indexes = @Index(name = "created_at_idx", columnList = "created_at")
-)
 @Inheritance(strategy = InheritanceType.JOINED)
 @Getter
 @Setter
 @NoArgsConstructor
 @SuperBuilder
-public class Chat extends PrimaryKeyIdentity {
+public abstract class Chat extends PrimaryKeyIdentity {
 
     @ManyToOne(optional = false)
     @JoinColumn(
