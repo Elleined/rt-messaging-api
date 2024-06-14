@@ -20,6 +20,7 @@ import java.util.Set;
 @NoArgsConstructor
 public class UserDTO extends DTO {
     private String name;
+    private String image;
     private List<PrivateChatDTO> privateChats;
     private Set<GroupChatDTO> groupChats;
     private List<MessageDTO> messages;
