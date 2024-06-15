@@ -5,8 +5,8 @@ import com.elleined.rt_messaging_api.model.mention.Mention;
 import com.elleined.rt_messaging_api.model.message.Message;
 import com.elleined.rt_messaging_api.model.user.User;
 import com.elleined.rt_messaging_api.service.CustomService;
+import org.springframework.data.domain.Pageable;
 
-import java.awt.print.Pageable;
 import java.util.List;
 
 public interface MessageService extends CustomService<Message> {

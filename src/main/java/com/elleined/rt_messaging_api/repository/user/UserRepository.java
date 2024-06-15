@@ -1,5 +1,6 @@
 package com.elleined.rt_messaging_api.repository.user;
 
+import com.elleined.rt_messaging_api.model.chat.Chat;
 import com.elleined.rt_messaging_api.model.chat.GroupChat;
 import com.elleined.rt_messaging_api.model.chat.PrivateChat;
 import com.elleined.rt_messaging_api.model.mention.Mention;
@@ -19,12 +20,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     @Query("SELECT u.groupChats FROM User u WHERE u = :currentUser")
     Page<GroupChat> findAllGroupChats(@Param("currentUser") User currentUser, Pageable pageable);
-
-    @Query("SELECT u.messages FROM User u WHERE u = :currentUser")
-    Page<Message> findAllMessages(@Param("currentUser") User currentUser, Pageable pageable);
-
-    @Query("SELECT u.reactions FROM User u WHERE u = :currentUser")
-    Page<Reaction> findAllReactions(@Param("currentUser") User currentUser, Pageable pageable);
 
     @Query("SELECT u.receivedMentions FROM User u WHERE u = :currentUser")
     Page<Mention> findAllReceivedMentions(@Param("currentUser") User currentUser, Pageable pageable);

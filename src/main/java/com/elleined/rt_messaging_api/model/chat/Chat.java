@@ -37,4 +37,8 @@ public abstract class Chat extends PrimaryKeyIdentity {
                 .map(PrimaryKeyIdentity::getId)
                 .toList();
     }
+
+    public boolean notOwned(Message message) {
+        return !this.getMessages().contains(message);
+    }
 }

@@ -80,4 +80,7 @@ public class Message extends PrimaryKeyIdentity {
                 .toList();
     }
 
+    public boolean notOwned(Reaction reaction) {
+        return !this.getReactions().contains(reaction);
+    }
 }
