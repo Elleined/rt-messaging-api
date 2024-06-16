@@ -54,6 +54,22 @@ public class GroupMessageController {
                 .toList();
     }
 
+
+    @DeleteMapping("/{messageId}/unsent")
+    public void unsent(@PathVariable("currentUserId") int currentUserId,
+                       @PathVariable("groupChatId") int groupChatId,
+                       @PathVariable("messageId") int messageId) {
+
+        User currentUser = userService.getById(currentUserId);
+        GroupChat groupChat = groupChatService.getById(groupChatId);
+        Message message = messageService.getById(messageId);
+
+        messageService.unsent(currentUser, groupChat, message);
+
+        MessageDTO messageDTO = messageMapper.toDTO(message);
+        wsService.broadcast(groupChat, messageDTO);
+    }
+
     @PostMapping
     public MessageDTO save(@PathVariable("currentUserId") int currentUserId,
                            @PathVariable("groupChatId") int groupChatId,

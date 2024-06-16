@@ -35,6 +35,33 @@ public class PrivateChatServiceImpl implements PrivateChatService {
 
     @Override
     public PrivateChat getOrSave(User currentUser, User receiver) {
+        // Checks if Current user as creator doesn't have the receiver to its created private chats.
+        // Here Receiver acts as the receiver itself
+        boolean createDecision1 = currentUser.getCreatedPrivateChats().stream()
+                .map(PrivateChat::getReceiver)
+                .noneMatch(receiver::equals);
+
+        // Check if Current user as Receiver doesn't have the creator to its received private chats
+        // Here receiver acts as the Creator
+        boolean createDecision2 = currentUser.getReceivedPrivateChats().stream()
+                .map(PrivateChat::getCreator)
+                .noneMatch(receiver::equals);
+
+        if (createDecision1 && createDecision2)
+            return this.save(currentUser, receiver);
+
+        // Checks if Current user as creator have the receiver to its created private chats.
+        // Here Receiver acts as the receiver itself
+        boolean getDecision1 = currentUser.getCreatedPrivateChats().stream()
+                .map(PrivateChat::getReceiver)
+                .anyMatch(receiver::equals);
+
+        // Check if Current user as Receiver have the creator to its received private chats
+        // Here receiver acts as the Creator
+        boolean getDecision2 = currentUser.getReceivedPrivateChats().stream()
+                .map(PrivateChat::getCreator)
+                .anyMatch(receiver::equals);
+
         return null;
     }
 

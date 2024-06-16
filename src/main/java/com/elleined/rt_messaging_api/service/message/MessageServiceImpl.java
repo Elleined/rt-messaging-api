@@ -1,12 +1,12 @@
 package com.elleined.rt_messaging_api.service.message;
 
 import com.elleined.rt_messaging_api.exception.resource.ResourceNotFoundException;
+import com.elleined.rt_messaging_api.exception.resource.ResourceNotOwnedException;
 import com.elleined.rt_messaging_api.mapper.message.MessageMapper;
 import com.elleined.rt_messaging_api.model.chat.Chat;
 import com.elleined.rt_messaging_api.model.message.Message;
 import com.elleined.rt_messaging_api.model.user.User;
 import com.elleined.rt_messaging_api.repository.message.MessageRepository;
-import com.elleined.rt_messaging_api.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -21,8 +21,6 @@ import java.util.List;
 @Transactional
 @RequiredArgsConstructor
 public class MessageServiceImpl implements MessageService {
-    private final UserRepository userRepository;
-
     private final MessageRepository messageRepository;
     private final MessageMapper messageMapper;
 
@@ -38,6 +36,25 @@ public class MessageServiceImpl implements MessageService {
         messageRepository.save(message);
         log.debug("Saving message success");
         return message;
+    }
+
+    @Override
+    public void unsent(User currentUser, Chat chat, Message message) {
+        if (currentUser.notOwned(message))
+            throw new ResourceNotOwnedException("");
+
+        if (chat.notOwned(message))
+            throw new ResourceNotOwnedException("Cannot unsent message! because this chat doesn't have the message");
+
+        chat.getMessages().remove(message);
+
+        messageRepository.delete(message);
+        log.debug("Message unsent successfully!");
+    }
+
+    @Override
+    public void removeForYou(User currentUser, Chat chat, Message message) {
+
     }
 
     @Override

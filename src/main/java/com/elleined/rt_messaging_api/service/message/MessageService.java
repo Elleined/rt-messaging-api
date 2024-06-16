@@ -14,4 +14,10 @@ public interface MessageService extends CustomService<Message> {
                  String content,
                  Message.ContentType contentType,
                  Chat chat);
+
+    // Will be remove forever
+    // only the owner can unsent his message
+    void unsent(User currentUser, Chat chat, Message message);
+
+    void removeForYou(User currentUser, Chat chat, Message message);
 }

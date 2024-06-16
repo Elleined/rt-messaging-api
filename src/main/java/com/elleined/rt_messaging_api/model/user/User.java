@@ -36,11 +36,17 @@ public class User extends PrimaryKeyIdentity {
     @Column(name = "image")
     private String image;
 
+    @OneToMany(mappedBy = "creator")
+    private List<PrivateChat> createdPrivateChats;
+
     @OneToMany(mappedBy = "receiver")
-    private List<PrivateChat> privateChats; // Receive private chat. Basically created chats are not bidirectional
+    private List<PrivateChat> receivedPrivateChats;
+
+    @OneToMany(mappedBy = "creator")
+    private List<GroupChat> createdGroupChats;
 
     @ManyToMany(mappedBy = "receivers")
-    private Set<GroupChat> groupChats; // Received group chats. Basically created chats are not bidirectional
+    private Set<GroupChat> receivedGroupChats;
 
     @OneToMany(mappedBy = "creator")
     private List<Message> messages;
@@ -52,36 +58,22 @@ public class User extends PrimaryKeyIdentity {
     private List<Mention> receivedMentions;
 
     public List<Integer> privateChatIds() {
-        return this.getPrivateChats().stream()
+        return this.getReceivedPrivateChats().stream()
                 .map(PrimaryKeyIdentity::getId)
                 .toList();
     }
 
     public Set<Integer> groupChatIds() {
-        return this.getGroupChats().stream()
+        return this.getReceivedGroupChats().stream()
                 .map(PrimaryKeyIdentity::getId)
                 .collect(Collectors.toSet());
     }
 
-    public List<Integer> messageIds() {
-        return this.getMessages().stream()
-                .map(PrimaryKeyIdentity::getId)
-                .toList();
-    }
-
-    public List<Integer> reactionIds() {
-        return this.getReactions().stream()
-                .map(PrimaryKeyIdentity::getId)
-                .toList();
-    }
-
-    public List<Integer> receivedMentionIds() {
-        return this.getReceivedMentions().stream()
-                .map(PrimaryKeyIdentity::getId)
-                .toList();
-    }
-
     public boolean notOwned(Reaction reaction) {
         return !this.getReactions().contains(reaction);
+    }
+
+    public boolean notOwned(Message message) {
+        return !this.getMessages().contains(message);
     }
 }

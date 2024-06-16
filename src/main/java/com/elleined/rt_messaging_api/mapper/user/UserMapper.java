@@ -18,7 +18,6 @@ public interface UserMapper extends CustomMapper<User, UserDTO> {
             @Mapping(target = "image", source = "image"),
             @Mapping(target = "privateChatIds", expression = "java(user.privateChatIds())"),
             @Mapping(target = "groupChatIds", expression = "java(user.groupChatIds())"),
-            @Mapping(target = "receivedMentionIds", expression = "java(user.receivedMentionIds())"),
     })
     UserDTO toDTO(User user);
 
@@ -27,11 +26,17 @@ public interface UserMapper extends CustomMapper<User, UserDTO> {
             @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())"),
             @Mapping(target = "name", source = "name"),
             @Mapping(target = "image", source = "image"),
-            @Mapping(target = "privateChats", expression = "java(new java.util.ArrayList<>())"),
-            @Mapping(target = "groupChats", expression = "java(new java.util.HashSet<>())"),
+            // Created
+            @Mapping(target = "createdPrivateChats", expression = "java(new java.util.ArrayList<>())"),
+            @Mapping(target = "createdGroupChats", expression = "java(new java.util.ArrayList<>())"),
+
+            // Received
+            @Mapping(target = "receivedGroupChats", expression = "java(new java.util.ArrayList<>())"),
+            @Mapping(target = "receivedPrivateChats", expression = "java(new java.util.ArrayList<>())"),
             @Mapping(target = "messages", expression = "java(new java.util.ArrayList<>())"),
             @Mapping(target = "reactions", expression = "java(new java.util.ArrayList<>())"),
             @Mapping(target = "receivedMentions", expression = "java(new java.util.ArrayList<>())"),
+
     })
     User toEntity(String name,
                   String image);

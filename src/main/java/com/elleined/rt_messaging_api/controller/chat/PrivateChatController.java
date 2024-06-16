@@ -1,14 +1,11 @@
 package com.elleined.rt_messaging_api.controller.chat;
 
 import com.elleined.rt_messaging_api.dto.chat.PrivateChatDTO;
-import com.elleined.rt_messaging_api.dto.message.MessageDTO;
 import com.elleined.rt_messaging_api.exception.resource.ResourceNotFoundException;
 import com.elleined.rt_messaging_api.mapper.chat.PrivateChatMapper;
-import com.elleined.rt_messaging_api.mapper.message.MessageMapper;
 import com.elleined.rt_messaging_api.model.chat.PrivateChat;
 import com.elleined.rt_messaging_api.model.user.User;
 import com.elleined.rt_messaging_api.service.chat.pv.PrivateChatService;
-import com.elleined.rt_messaging_api.service.message.MessageService;
 import com.elleined.rt_messaging_api.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -26,26 +23,6 @@ public class PrivateChatController {
 
     private final PrivateChatService privateChatService;
     private final PrivateChatMapper privateChatMapper;
-
-    private final MessageService messageService;
-    private final MessageMapper messageMapper;
-
-    @GetMapping("/{privateChatId}/messages")
-    public List<MessageDTO> getAllMessage(@PathVariable("currentUserId") int currentUserId,
-                                          @PathVariable("privateChatId") int privateChatId,
-                                          @RequestParam(required = false, defaultValue = "1", value = "pageNumber") int pageNumber,
-                                          @RequestParam(required = false, defaultValue = "5", value = "pageSize") int pageSize,
-                                          @RequestParam(required = false, defaultValue = "ASC", value = "sortDirection") Sort.Direction direction,
-                                          @RequestParam(required = false, defaultValue = "id", value = "sortBy") String sortBy) {
-
-        User currentUser = userService.getById(currentUserId);
-        PrivateChat privateChat = privateChatService.getById(privateChatId);
-        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, direction, sortBy);
-
-        return messageService.getAllMessage(currentUser, privateChat, pageable).stream()
-                .map(messageMapper::toDTO)
-                .toList();
-    }
 
     @GetMapping
     public List<PrivateChatDTO> getAll(@PathVariable("currentUserId") int currentUserId,
