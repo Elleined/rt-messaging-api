@@ -3,9 +3,11 @@ package com.elleined.rt_messaging_api.service.chat.pv;
 import com.elleined.rt_messaging_api.exception.resource.ResourceNotFoundException;
 import com.elleined.rt_messaging_api.mapper.chat.PrivateChatMapper;
 import com.elleined.rt_messaging_api.model.chat.PrivateChat;
+import com.elleined.rt_messaging_api.model.message.Message;
 import com.elleined.rt_messaging_api.model.user.User;
 import com.elleined.rt_messaging_api.repository.chat.PrivateChatRepository;
 import com.elleined.rt_messaging_api.repository.user.UserRepository;
+import com.elleined.rt_messaging_api.service.mention.MentionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +26,8 @@ public class PrivateChatServiceImpl implements PrivateChatService {
     private final PrivateChatRepository privateChatRepository;
     private final PrivateChatMapper privateChatMapper;
 
+    private final MentionService mentionService;
+
     @Override
     public PrivateChat save(User creator, User receiver) {
         PrivateChat privateChat = privateChatMapper.toEntity(creator, receiver);
@@ -31,6 +35,19 @@ public class PrivateChatServiceImpl implements PrivateChatService {
         privateChatRepository.save(privateChat);
         log.debug("Saving private chat success");
         return privateChat;
+    }
+
+    @Override
+    public PrivateChat getOrSave(User currentUser, User receiver) {
+        return null;
+    }
+
+    @Override
+    public void mentionOtherUser(User currentUser, PrivateChat privateChat, Message message) {
+        if (currentUser.equals(privateChat.getCreator()))
+            mentionService.save(currentUser, privateChat.getReceiver(), message);
+
+        mentionService.save(currentUser, privateChat.getCreator(), message);
     }
 
     @Override

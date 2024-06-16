@@ -27,7 +27,7 @@ public class MessageServiceImpl implements MessageService {
     private final MessageMapper messageMapper;
 
     @Override
-    public List<Message> getAllMessage(Chat chat, Pageable pageable) {
+    public List<Message> getAllMessage(User currentUser, Chat chat, Pageable pageable) {
         return messageRepository.findAll(chat, pageable).getContent();
     }
 

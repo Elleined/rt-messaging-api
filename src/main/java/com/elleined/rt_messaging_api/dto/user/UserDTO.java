@@ -18,7 +18,5 @@ public class UserDTO extends DTO {
     private String image;
     private List<Integer> privateChatIds;
     private Set<Integer> groupChatIds;
-    private List<Integer> messageIds;
-    private List<Integer> reactionIds;
     private List<Integer> receivedMentionIds;
 }

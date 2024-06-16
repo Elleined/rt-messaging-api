@@ -60,6 +60,7 @@ public class GroupChatController {
         return picture;
     }
 
+    @GetMapping("/{groupChatId}/receivers")
     public List<UserDTO> getAllReceivers(@PathVariable("currentUserId") int currentUserId,
                                          @PathVariable("groupChatId") int groupChatId,
                                          @RequestParam(required = false, defaultValue = "1", value = "pageNumber") int pageNumber,
@@ -102,7 +103,7 @@ public class GroupChatController {
         wsService.broadcast(groupChat, STR."\{currentUser.getName()} added \{receiver.getName()} to the group.");
     }
 
-    @DeleteMapping("/{groupChatId}/remove")
+    @DeleteMapping("/{groupChatId}/remove/{participantId}")
     public void removeParticipant(@PathVariable("currentUserId") int currentUserId,
                                   @PathVariable("groupChatId") int groupChatId,
                                   @PathVariable("participantId") int participantId) {

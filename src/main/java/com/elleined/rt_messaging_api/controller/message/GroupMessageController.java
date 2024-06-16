@@ -20,7 +20,6 @@ import org.springframework.web.util.HtmlUtils;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 
 @RestController
@@ -39,29 +38,31 @@ public class GroupMessageController {
     private final WSService wsService;
 
     @GetMapping
-    public List<MessageDTO> getAllMessage(@PathVariable("groupChatId") int groupChatId,
+    public List<MessageDTO> getAllMessage(@PathVariable("currentUserId") int currentUserId,
+                                          @PathVariable("groupChatId") int groupChatId,
                                           @RequestParam(required = false, defaultValue = "1", value = "pageNumber") int pageNumber,
                                           @RequestParam(required = false, defaultValue = "5", value = "pageSize") int pageSize,
                                           @RequestParam(required = false, defaultValue = "ASC", value = "sortDirection") Sort.Direction direction,
                                           @RequestParam(required = false, defaultValue = "id", value = "sortBy") String sortBy) {
 
+        User currentUser = userService.getById(currentUserId);
         GroupChat groupChat = groupChatService.getById(groupChatId);
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, direction, sortBy);
 
-        return messageService.getAllMessage(groupChat, pageable).stream()
+        return messageService.getAllMessage(currentUser, groupChat, pageable).stream()
                 .map(messageMapper::toDTO)
                 .toList();
     }
 
     @PostMapping
     public MessageDTO save(@PathVariable("currentUserId") int currentUserId,
-                        @RequestParam("content") String content,
-                        @RequestParam("contentType") Message.ContentType contentType,
-                        @RequestParam("chatId") int chatId,
-                        @RequestParam(required = false, name = "mentionUserIds") List<Integer> mentionUserIds) {
+                           @PathVariable("groupChatId") int groupChatId,
+                           @RequestParam("content") String content,
+                           @RequestParam("contentType") Message.ContentType contentType,
+                           @RequestParam(required = false, name = "mentionUserIds") List<Integer> mentionUserIds) {
 
         User currentUser = userService.getById(currentUserId);
-        GroupChat groupChat = groupChatService.getById(chatId);
+        GroupChat groupChat = groupChatService.getById(groupChatId);
         String sanitizeContent = HtmlUtils.htmlEscape(content);
         List<User> mentionedUsers = userService.getAllById(mentionUserIds);
 

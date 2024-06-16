@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface MessageService extends CustomService<Message> {
-    List<Message> getAllMessage(Chat chat, Pageable pageable);
+    List<Message> getAllMessage(User currentUser, Chat chat, Pageable pageable);
     Message save(User creator,
                  String content,
                  Message.ContentType contentType,
