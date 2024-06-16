@@ -3,7 +3,6 @@ package com.elleined.rt_messaging_api.service.message;
 import com.elleined.rt_messaging_api.exception.resource.ResourceNotFoundException;
 import com.elleined.rt_messaging_api.mapper.message.MessageMapper;
 import com.elleined.rt_messaging_api.model.chat.Chat;
-import com.elleined.rt_messaging_api.model.mention.Mention;
 import com.elleined.rt_messaging_api.model.message.Message;
 import com.elleined.rt_messaging_api.model.user.User;
 import com.elleined.rt_messaging_api.repository.message.MessageRepository;
@@ -33,11 +32,11 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public Message save(User creator, String content, Message.ContentType contentType, Chat chat, List<Mention> mentions) {
-        Message message = messageMapper.toEntity(creator, content, contentType, chat, mentions);
+    public Message save(User creator, String content, Message.ContentType contentType, Chat chat) {
+        Message message = messageMapper.toEntity(creator, content, contentType, chat);
 
         messageRepository.save(message);
-        log.debug("Saving message successs");
+        log.debug("Saving message success");
         return message;
     }
 

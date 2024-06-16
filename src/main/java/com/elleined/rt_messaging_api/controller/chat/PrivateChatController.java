@@ -24,6 +24,8 @@ public class PrivateChatController {
     private final PrivateChatService privateChatService;
     private final PrivateChatMapper privateChatMapper;
 
+
+
     @GetMapping
     public List<PrivateChatDTO> getAll(@PathVariable("currentUserId") int currentUserId,
                                        @RequestParam(required = false, defaultValue = "1", value = "pageNumber") int pageNumber,

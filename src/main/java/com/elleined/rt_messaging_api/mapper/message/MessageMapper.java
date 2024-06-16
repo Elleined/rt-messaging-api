@@ -2,20 +2,12 @@ package com.elleined.rt_messaging_api.mapper.message;
 
 import com.elleined.rt_messaging_api.dto.message.MessageDTO;
 import com.elleined.rt_messaging_api.mapper.CustomMapper;
-import com.elleined.rt_messaging_api.mapper.chat.GroupChatMapper;
-import com.elleined.rt_messaging_api.mapper.chat.PrivateChatMapper;
-import com.elleined.rt_messaging_api.mapper.mention.MentionMapper;
-import com.elleined.rt_messaging_api.mapper.reaction.ReactionMapper;
-import com.elleined.rt_messaging_api.mapper.user.UserMapper;
 import com.elleined.rt_messaging_api.model.chat.Chat;
-import com.elleined.rt_messaging_api.model.mention.Mention;
 import com.elleined.rt_messaging_api.model.message.Message;
 import com.elleined.rt_messaging_api.model.user.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
-
-import java.util.List;
 
 @Mapper(
         componentModel = "spring",
@@ -47,11 +39,10 @@ public interface MessageMapper extends CustomMapper<Message, MessageDTO> {
             @Mapping(target = "contentType", source = "contentType"),
             @Mapping(target = "chat", source = "chat"),
             @Mapping(target = "reactions", expression = "java(new java.util.ArrayList<>())"),
-            @Mapping(target = "mentions", source = "mentions"),
+            @Mapping(target = "mentions", expression = "java(new java.util.ArrayList<>())"),
     })
     Message toEntity(User creator,
                      String content,
                      Message.ContentType contentType,
-                     Chat chat,
-                     List<Mention> mentions);
+                     Chat chat);
 }
