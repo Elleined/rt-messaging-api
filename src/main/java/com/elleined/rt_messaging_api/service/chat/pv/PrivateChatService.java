@@ -4,9 +4,17 @@ import com.elleined.rt_messaging_api.model.chat.PrivateChat;
 import com.elleined.rt_messaging_api.model.user.User;
 import com.elleined.rt_messaging_api.service.chat.ChatService;
 
+import java.util.Optional;
+
 public interface PrivateChatService extends ChatService<PrivateChat> {
     PrivateChat save(User creator,
                      User receiver);
 
-    PrivateChat getOrSave(User currentUser, User receiver);
+    void delete(User currentUser, PrivateChat privateChat);
+
+    boolean hasExistingChat(User creator,
+                            User receiver);
+
+    Optional<PrivateChat> getByCreatorAndReceiver(User creator,
+                                                  User receiver);
 }

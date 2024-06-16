@@ -4,6 +4,8 @@ import com.elleined.rt_messaging_api.exception.resource.ResourceNotFoundExceptio
 import com.elleined.rt_messaging_api.exception.resource.ResourceNotOwnedException;
 import com.elleined.rt_messaging_api.mapper.message.MessageMapper;
 import com.elleined.rt_messaging_api.model.chat.Chat;
+import com.elleined.rt_messaging_api.model.chat.GroupChat;
+import com.elleined.rt_messaging_api.model.chat.PrivateChat;
 import com.elleined.rt_messaging_api.model.message.Message;
 import com.elleined.rt_messaging_api.model.user.User;
 import com.elleined.rt_messaging_api.repository.message.MessageRepository;
@@ -25,16 +27,42 @@ public class MessageServiceImpl implements MessageService {
     private final MessageMapper messageMapper;
 
     @Override
-    public List<Message> getAllMessage(User currentUser, Chat chat, Pageable pageable) {
-        return messageRepository.findAll(chat, pageable).getContent();
+    public List<Message> getAllMessage(User currentUser, GroupChat groupChat, Pageable pageable) {
+        if (currentUser.notAllowed(groupChat))
+            throw new ResourceNotOwnedException("Cannot get all messages! because you cannot :) you already know why right?");
+
+        return messageRepository.findAll(groupChat, pageable).getContent();
     }
 
     @Override
-    public Message save(User creator, String content, Message.ContentType contentType, Chat chat) {
-        Message message = messageMapper.toEntity(creator, content, contentType, chat);
+    public List<Message> getAllMessage(User currentUser, PrivateChat privateChat, Pageable pageable) {
+        if (currentUser.notAllowed(privateChat))
+            throw new ResourceNotOwnedException("Cannot get all messages! because you cannot :) you already know why right?");
+
+        return messageRepository.findAll(privateChat, pageable).getContent();
+    }
+
+    @Override
+    public Message save(User creator, GroupChat groupChat, String content, Message.ContentType contentType) {
+        if (creator.notAllowed(groupChat))
+            throw new ResourceNotOwnedException("Cannot send message! because you cannot :) you already know why right?");
+
+        Message message = messageMapper.toEntity(creator, groupChat, content, contentType);
 
         messageRepository.save(message);
         log.debug("Saving message success");
+        return message;
+    }
+
+    @Override
+    public Message save(User creator, PrivateChat privateChat, String content, Message.ContentType contentType) {
+        if (creator.notAllowed(privateChat))
+            throw new ResourceNotOwnedException("Cannot send message! because you cannot :) you already know why right?");
+
+        Message message = messageMapper.toEntity(creator, privateChat, content, contentType);
+
+        messageRepository.save(message);
+        log.debug("Saving private message success");
         return message;
     }
 

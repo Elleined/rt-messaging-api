@@ -42,7 +42,7 @@ public interface MessageMapper extends CustomMapper<Message, MessageDTO> {
             @Mapping(target = "mentions", expression = "java(new java.util.ArrayList<>())"),
     })
     Message toEntity(User creator,
+                     Chat chat,
                      String content,
-                     Message.ContentType contentType,
-                     Chat chat);
+                     Message.ContentType contentType);
 }

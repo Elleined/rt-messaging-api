@@ -26,12 +26,7 @@ public interface UserMapper extends CustomMapper<User, UserDTO> {
             @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())"),
             @Mapping(target = "name", source = "name"),
             @Mapping(target = "image", source = "image"),
-            // Created
-            @Mapping(target = "createdPrivateChats", expression = "java(new java.util.ArrayList<>())"),
-            @Mapping(target = "createdGroupChats", expression = "java(new java.util.ArrayList<>())"),
-
-            // Received
-            @Mapping(target = "receivedGroupChats", expression = "java(new java.util.ArrayList<>())"),
+            @Mapping(target = "receivedGroupChats", expression = "java(new java.util.HashSet<>())"),
             @Mapping(target = "receivedPrivateChats", expression = "java(new java.util.ArrayList<>())"),
             @Mapping(target = "messages", expression = "java(new java.util.ArrayList<>())"),
             @Mapping(target = "reactions", expression = "java(new java.util.ArrayList<>())"),

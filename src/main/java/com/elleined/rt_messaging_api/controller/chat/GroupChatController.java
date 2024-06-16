@@ -131,17 +131,4 @@ public class GroupChatController {
                 .map(groupChatMapper::toDTO)
                 .toList();
     }
-
-    @GetMapping("/{groupChatId}")
-    public GroupChatDTO getById(@PathVariable("groupChatId") int groupChatId) throws ResourceNotFoundException {
-        GroupChat groupChat = groupChatService.getById(groupChatId);
-        return groupChatMapper.toDTO(groupChat);
-    }
-
-    @GetMapping("/get-all-by-id")
-    public List<GroupChatDTO> getAllById(@RequestBody List<Integer> ids) {
-        return groupChatService.getAllById(ids).stream()
-                .map(groupChatMapper::toDTO)
-                .toList();
-    }
 }

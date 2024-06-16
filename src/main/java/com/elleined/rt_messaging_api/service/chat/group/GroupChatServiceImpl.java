@@ -1,6 +1,7 @@
 package com.elleined.rt_messaging_api.service.chat.group;
 
 import com.elleined.rt_messaging_api.exception.resource.ResourceNotFoundException;
+import com.elleined.rt_messaging_api.exception.resource.ResourceNotOwnedException;
 import com.elleined.rt_messaging_api.mapper.chat.GroupChatMapper;
 import com.elleined.rt_messaging_api.model.chat.GroupChat;
 import com.elleined.rt_messaging_api.model.user.User;
@@ -36,6 +37,9 @@ public class GroupChatServiceImpl implements GroupChatService {
 
     @Override
     public void changeName(User currentUser, GroupChat groupChat, String name) {
+        if (currentUser.notAllowed(groupChat))
+            throw new ResourceNotOwnedException("Cannot change group name! because you cannot :) you already know why right?");
+
         groupChat.setName(name);
         groupChatRepository.save(groupChat);
         log.debug("Changing group name success!");
@@ -43,6 +47,9 @@ public class GroupChatServiceImpl implements GroupChatService {
 
     @Override
     public void changePicture(User currentUser, GroupChat groupChat, String picture) {
+        if (currentUser.notAllowed(groupChat))
+            throw new ResourceNotOwnedException("Cannot change group picture! because you cannot :) you already know why right?");
+
         groupChat.setPicture(picture);
         groupChatRepository.save(groupChat);
         log.debug("Changing picture success!");
@@ -50,13 +57,19 @@ public class GroupChatServiceImpl implements GroupChatService {
 
     @Override
     public List<User> getAllReceivers(User currentUser, GroupChat groupChat, Pageable pageable) {
+        if (currentUser.notAllowed(groupChat))
+            throw new ResourceNotOwnedException("Cannot get all receiver! because you cannot :) you already know why right?");
+
         return groupChatRepository.findAllReceivers(groupChat, pageable).getContent();
     }
 
     @Override
     public void leaveGroup(User currentUser, GroupChat groupChat) {
+        if (currentUser.notAllowed(groupChat))
+            throw new ResourceNotOwnedException("Cannot leave group! because you cannot :) you already know why right?");
+
         groupChat.getReceivers().remove(currentUser);
-        currentUser.getGroupChats().remove(groupChat);
+        currentUser.getReceivedGroupChats().remove(groupChat);
 
         groupChatRepository.save(groupChat);
         userRepository.save(currentUser);
@@ -66,8 +79,11 @@ public class GroupChatServiceImpl implements GroupChatService {
 
     @Override
     public void addReceiver(User currentUser, GroupChat groupChat, User receiver) {
+        if (currentUser.notAllowed(groupChat))
+            throw new ResourceNotOwnedException("Cannot add participant! because you cannot :) you already know why right?");
+
         groupChat.getReceivers().add(receiver);
-        receiver.getGroupChats().add(groupChat);
+        receiver.getReceivedGroupChats().add(groupChat);
 
         groupChatRepository.save(groupChat);
         userRepository.save(receiver);
@@ -77,8 +93,11 @@ public class GroupChatServiceImpl implements GroupChatService {
 
     @Override
     public void removeParticipant(User currentUser, GroupChat groupChat, User participant) {
+        if (currentUser.notAllowed(groupChat))
+            throw new ResourceNotOwnedException("Cannot remove participant! because you cannot :) you already know why right?");
+
         groupChat.getReceivers().remove(participant);
-        participant.getGroupChats().remove(groupChat);
+        participant.getReceivedGroupChats().remove(groupChat);
 
         groupChatRepository.save(groupChat);
         userRepository.save(participant);

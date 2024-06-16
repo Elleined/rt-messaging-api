@@ -1,6 +1,7 @@
 package com.elleined.rt_messaging_api.service.chat.pv;
 
 import com.elleined.rt_messaging_api.exception.resource.ResourceNotFoundException;
+import com.elleined.rt_messaging_api.exception.resource.ResourceNotOwnedException;
 import com.elleined.rt_messaging_api.mapper.chat.PrivateChatMapper;
 import com.elleined.rt_messaging_api.model.chat.PrivateChat;
 import com.elleined.rt_messaging_api.model.user.User;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -34,35 +36,31 @@ public class PrivateChatServiceImpl implements PrivateChatService {
     }
 
     @Override
-    public PrivateChat getOrSave(User currentUser, User receiver) {
-        // Checks if Current user as creator doesn't have the receiver to its created private chats.
-        // Here Receiver acts as the receiver itself
-        boolean createDecision1 = currentUser.getCreatedPrivateChats().stream()
+    public void delete(User currentUser, PrivateChat privateChat) {
+        if (currentUser.notOwned(privateChat))
+            throw new ResourceNotOwnedException("Cannot delete private chat! because you do not owned this conversation");
+
+        currentUser.getReceivedPrivateChats().remove(privateChat);
+        privateChatRepository.delete(privateChat);
+        log.debug("Deleting private chat success!");
+    }
+
+    @Override
+    public boolean hasExistingChat(User creator, User receiver) {
+        return creator.getReceivedPrivateChats().stream()
                 .map(PrivateChat::getReceiver)
-                .noneMatch(receiver::equals);
+                .anyMatch(receiver::equals) &&
 
-        // Check if Current user as Receiver doesn't have the creator to its received private chats
-        // Here receiver acts as the Creator
-        boolean createDecision2 = currentUser.getReceivedPrivateChats().stream()
-                .map(PrivateChat::getCreator)
-                .noneMatch(receiver::equals);
+                receiver.getReceivedPrivateChats().stream()
+                        .map(PrivateChat::getReceiver)
+                        .anyMatch(creator::equals);
+    }
 
-        if (createDecision1 && createDecision2)
-            return this.save(currentUser, receiver);
-
-        // Checks if Current user as creator have the receiver to its created private chats.
-        // Here Receiver acts as the receiver itself
-        boolean getDecision1 = currentUser.getCreatedPrivateChats().stream()
-                .map(PrivateChat::getReceiver)
-                .anyMatch(receiver::equals);
-
-        // Check if Current user as Receiver have the creator to its received private chats
-        // Here receiver acts as the Creator
-        boolean getDecision2 = currentUser.getReceivedPrivateChats().stream()
-                .map(PrivateChat::getCreator)
-                .anyMatch(receiver::equals);
-
-        return null;
+    @Override
+    public Optional<PrivateChat> getByCreatorAndReceiver(User creator, User receiver) {
+        return creator.getReceivedPrivateChats().stream()
+                .filter(privateChat -> privateChat.getReceiver().equals(receiver) || privateChat.getCreator().equals(receiver))
+                .findFirst();
     }
 
     @Override

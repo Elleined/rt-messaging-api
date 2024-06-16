@@ -12,13 +12,9 @@ import org.springframework.data.repository.query.Param;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
 
-    @Query("SELECT u.privateChats FROM User u WHERE u = :currentUser")
+    @Query("SELECT u.receivedPrivateChats FROM User u WHERE u = :currentUser")
     Page<PrivateChat> findAllPrivateChats(@Param("currentUser") User currentUser, Pageable pageable);
 
-    @Query("SELECT u.groupChats FROM User u WHERE u = :currentUser")
+    @Query("SELECT u.receivedGroupChats FROM User u WHERE u = :currentUser")
     Page<GroupChat> findAllGroupChats(@Param("currentUser") User currentUser, Pageable pageable);
-
-    @Query("SELECT u.receivedMentions FROM User u WHERE u = :currentUser")
-    Page<Mention> findAllReceivedMentions(@Param("currentUser") User currentUser, Pageable pageable);
-
 }

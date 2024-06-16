@@ -24,6 +24,22 @@ public class PrivateChatController {
     private final PrivateChatService privateChatService;
     private final PrivateChatMapper privateChatMapper;
 
+    @PostMapping
+    private PrivateChatDTO getOrSave(@PathVariable("currentUserId") int currentUserId,
+                                     @RequestParam("receiverId") int receiverId) {
+
+        User currentUser = userService.getById(currentUserId);
+        User receiver = userService.getById(receiverId);
+
+        if (privateChatService.hasExistingChat(currentUser, receiver)) {
+               PrivateChat privateChat = privateChatService.getByCreatorAndReceiver(currentUser, receiver).orElseThrow(() -> new ResourceNotFoundException("Private chat cannot be found! Please contact the developer if this occurs. Thanks"));
+               return privateChatMapper.toDTO(privateChat);
+        }
+
+        PrivateChat privateChat = privateChatService.save(currentUser, receiver);
+        return privateChatMapper.toDTO(privateChat);
+    }
+
     @GetMapping
     public List<PrivateChatDTO> getAll(@PathVariable("currentUserId") int currentUserId,
                                        @RequestParam(required = false, defaultValue = "1", value = "pageNumber") int pageNumber,
@@ -39,16 +55,13 @@ public class PrivateChatController {
                 .toList();
     }
 
-    @GetMapping("/{privateChatId}")
-    public PrivateChatDTO getById(@PathVariable("privateChatId") int privateChatId) throws ResourceNotFoundException {
-        PrivateChat privateChat = privateChatService.getById(privateChatId);
-        return privateChatMapper.toDTO(privateChat);
-    }
+    @DeleteMapping("/{privateChatId}")
+    public void delete(@PathVariable("currentUserId") int currentUserId,
+                       @PathVariable("privateChatId") int privateChatId) {
 
-    @GetMapping("/get-all-by-id")
-    public List<PrivateChatDTO> getAllById(@RequestBody List<Integer> ids) {
-        return privateChatService.getAllById(ids).stream()
-                .map(privateChatMapper::toDTO)
-                .toList();
+        User currentUser = userService.getById(currentUserId);
+        PrivateChat privateChat = privateChatService.getById(privateChatId);
+
+        privateChatService.delete(currentUser, privateChat);
     }
 }

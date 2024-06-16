@@ -19,7 +19,7 @@ import org.springframework.web.util.HtmlUtils;
 import java.util.List;
 
 @RestController
-@RequestMapping("/users/{currentUserId}/private-chat/{privateChatId}/messages")
+@RequestMapping("/users/{currentUserId}/private-chats/{privateChatId}/messages")
 @RequiredArgsConstructor
 public class PrivateMessageController {
     private final UserService userService;
@@ -73,7 +73,7 @@ public class PrivateMessageController {
         PrivateChat privateChat = privateChatService.getById(privateChatId);
         String sanitizeContent = HtmlUtils.htmlEscape(content);
 
-        Message message = messageService.save(currentUser, sanitizeContent, contentType, privateChat);
+        Message message = messageService.save(currentUser, privateChat, sanitizeContent, contentType);
 
         MessageDTO messageDTO = messageMapper.toDTO(message);
         wsService.broadcast(privateChat, messageDTO);

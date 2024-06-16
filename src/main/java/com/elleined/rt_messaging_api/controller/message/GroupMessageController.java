@@ -82,7 +82,7 @@ public class GroupMessageController {
         String sanitizeContent = HtmlUtils.htmlEscape(content);
         List<User> mentionedUsers = userService.getAllById(mentionUserIds);
 
-        Message message = messageService.save(currentUser, sanitizeContent, contentType, groupChat);
+        Message message = messageService.save(currentUser, groupChat, sanitizeContent, contentType);
         List<Mention> mentions = mentionService.saveAll(currentUser, new HashSet<>(mentionedUsers), message);
 
         MessageDTO messageDTO = messageMapper.toDTO(message);

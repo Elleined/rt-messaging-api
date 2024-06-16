@@ -36,14 +36,8 @@ public class User extends PrimaryKeyIdentity {
     @Column(name = "image")
     private String image;
 
-    @OneToMany(mappedBy = "creator")
-    private List<PrivateChat> createdPrivateChats;
-
     @OneToMany(mappedBy = "receiver")
     private List<PrivateChat> receivedPrivateChats;
-
-    @OneToMany(mappedBy = "creator")
-    private List<GroupChat> createdGroupChats;
 
     @ManyToMany(mappedBy = "receivers")
     private Set<GroupChat> receivedGroupChats;
@@ -75,5 +69,19 @@ public class User extends PrimaryKeyIdentity {
 
     public boolean notOwned(Message message) {
         return !this.getMessages().contains(message);
+    }
+
+    public boolean notOwned(PrivateChat privateChat) {
+        return !this.getReceivedPrivateChats().contains(privateChat);
+    }
+
+    public boolean notAllowed(PrivateChat privateChat) {
+        return !privateChat.getCreator().equals(this) &&
+                !privateChat.getReceiver().equals(this);
+    }
+
+    public boolean notAllowed(GroupChat groupChat) {
+        return !groupChat.getCreator().equals(this) &&
+                !groupChat.getReceivers().contains(this);
     }
 }
