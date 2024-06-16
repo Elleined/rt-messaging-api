@@ -8,5 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface GroupChatRepository extends ChatRepository<GroupChat> {
-
+    @Query("SELECT gc.receivers FROM GroupChat gc WHERE gc = :groupChat")
+    Page<User> findAllReceivers(@Param("groupChat") GroupChat groupChat, Pageable pageable);
 }

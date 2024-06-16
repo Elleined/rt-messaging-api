@@ -49,6 +49,11 @@ public class GroupChatServiceImpl implements GroupChatService {
     }
 
     @Override
+    public List<User> getAllReceivers(User currentUser, GroupChat groupChat, Pageable pageable) {
+        return groupChatRepository.findAllReceivers(groupChat, pageable).getContent();
+    }
+
+    @Override
     public void leaveGroup(User currentUser, GroupChat groupChat) {
         groupChat.getReceivers().remove(currentUser);
         currentUser.getGroupChats().remove(groupChat);
