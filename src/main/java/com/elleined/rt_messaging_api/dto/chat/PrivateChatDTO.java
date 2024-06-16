@@ -1,6 +1,5 @@
 package com.elleined.rt_messaging_api.dto.chat;
 
-import com.elleined.rt_messaging_api.dto.user.UserDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

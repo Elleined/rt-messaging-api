@@ -1,7 +1,5 @@
 package com.elleined.rt_messaging_api;
 
-import com.elleined.rt_messaging_api.model.chat.PrivateChat;
-import com.elleined.rt_messaging_api.service.message.MessageService;
 import net.datafaker.Faker;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

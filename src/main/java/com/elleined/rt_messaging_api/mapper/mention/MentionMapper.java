@@ -2,8 +2,6 @@ package com.elleined.rt_messaging_api.mapper.mention;
 
 import com.elleined.rt_messaging_api.dto.mention.MentionDTO;
 import com.elleined.rt_messaging_api.mapper.CustomMapper;
-import com.elleined.rt_messaging_api.mapper.message.MessageMapper;
-import com.elleined.rt_messaging_api.mapper.user.UserMapper;
 import com.elleined.rt_messaging_api.model.mention.Mention;
 import com.elleined.rt_messaging_api.model.message.Message;
 import com.elleined.rt_messaging_api.model.user.User;
