@@ -15,7 +15,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/users/{currentUserId}/group-chats")
@@ -28,6 +31,20 @@ public class GroupChatController {
     private final GroupChatMapper groupChatMapper;
 
     private final WSService wsService;
+
+    @PostMapping
+    public GroupChatDTO save(@PathVariable("currentUserId") int currentUserId,
+                             @RequestParam("name") String name,
+                             @RequestParam("picture") String picture,
+                             @RequestParam("receiverUserIds") Set<Integer> receiverUserIds) {
+
+        User currentUser = userService.getById(currentUserId);
+        List<User> receiverUsers = userService.getAllById(new ArrayList<>(receiverUserIds));
+
+        GroupChat groupChat = groupChatService.save(currentUser, name, picture, new HashSet<>(receiverUsers));
+
+        return groupChatMapper.toDTO(groupChat);
+    }
 
     @PatchMapping("/{groupChatId}/name")
     public String changeName(@PathVariable("currentUserId") int currentUserId,

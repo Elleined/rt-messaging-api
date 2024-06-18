@@ -1,5 +1,6 @@
 package com.elleined.rt_messaging_api.service.chat.group;
 
+import com.elleined.rt_messaging_api.exception.chat.GroupChatException;
 import com.elleined.rt_messaging_api.exception.resource.ResourceNotFoundException;
 import com.elleined.rt_messaging_api.exception.resource.ResourceNotOwnedException;
 import com.elleined.rt_messaging_api.mapper.chat.GroupChatMapper;
@@ -28,6 +29,7 @@ public class GroupChatServiceImpl implements GroupChatService {
 
     @Override
     public GroupChat save(User creator, String name, String picture, Set<User> receivers) {
+        receivers.add(creator);
         GroupChat groupChat = groupChatMapper.toEntity(creator, name, picture, receivers);
 
         groupChatRepository.save(groupChat);
@@ -81,6 +83,9 @@ public class GroupChatServiceImpl implements GroupChatService {
     public void addReceiver(User currentUser, GroupChat groupChat, User receiver) {
         if (currentUser.notAllowed(groupChat))
             throw new ResourceNotOwnedException("Cannot add participant! because you cannot :) you already know why right?");
+
+        if (isReceiverLimitReached(groupChat, receiver))
+            throw new GroupChatException("Cannot add participant! because this group chat already reached the receiver limit which is " + RECEIVER_LIMIT);
 
         groupChat.getReceivers().add(receiver);
         receiver.getReceivedGroupChats().add(groupChat);

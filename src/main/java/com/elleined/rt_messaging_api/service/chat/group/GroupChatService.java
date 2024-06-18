@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 public interface GroupChatService extends ChatService<GroupChat> {
+    int RECEIVER_LIMIT = 200;
 
     GroupChat save(User creator,
                    String name,
@@ -27,5 +28,11 @@ public interface GroupChatService extends ChatService<GroupChat> {
 
     default void addAllReceiver(User currentUser, GroupChat groupChat, Set<User> receivers) {
         receivers.forEach(receiver -> this.addReceiver(currentUser, groupChat, receiver));
+    }
+
+    default boolean isReceiverLimitReached(GroupChat groupChat, User receiver) {
+        return receiver != null
+                ? groupChat.getReceivers().size() + 1 >= RECEIVER_LIMIT
+                : groupChat.getReceivers().size() >= RECEIVER_LIMIT;
     }
 }
