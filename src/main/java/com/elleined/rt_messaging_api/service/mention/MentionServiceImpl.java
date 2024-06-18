@@ -30,6 +30,9 @@ public class MentionServiceImpl implements MentionService {
             throw new MessageException("Cannot save mention! because message is already been deleted or inactive!");
 
         Mention mention = mentionMapper.toEntity(mentioningUser, mentionedUser, message);
+
+        message.getMentions().add(mention);
+
         mentionRepository.save(mention);
         log.debug("Saving mention success");
         return mention;

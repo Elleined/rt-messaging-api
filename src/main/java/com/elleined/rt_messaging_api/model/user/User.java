@@ -74,17 +74,12 @@ public class User extends PrimaryKeyIdentity {
         return !this.getMessages().contains(message);
     }
 
-    public boolean notOwned(PrivateChat privateChat) {
-        return !this.getReceivedPrivateChats().contains(privateChat);
-    }
-
     public boolean notAllowed(PrivateChat privateChat) {
         return !privateChat.getCreator().equals(this) &&
                 !privateChat.getReceiver().equals(this);
     }
 
     public boolean notAllowed(GroupChat groupChat) {
-        return !groupChat.getCreator().equals(this) &&
-                !groupChat.getReceivers().contains(this);
+        return !groupChat.getReceivers().contains(this);
     }
 }

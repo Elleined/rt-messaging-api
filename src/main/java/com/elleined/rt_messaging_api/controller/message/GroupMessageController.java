@@ -1,6 +1,8 @@
 package com.elleined.rt_messaging_api.controller.message;
 
+import com.elleined.rt_messaging_api.dto.mention.MentionDTO;
 import com.elleined.rt_messaging_api.dto.message.MessageDTO;
+import com.elleined.rt_messaging_api.mapper.mention.MentionMapper;
 import com.elleined.rt_messaging_api.mapper.message.MessageMapper;
 import com.elleined.rt_messaging_api.model.chat.GroupChat;
 import com.elleined.rt_messaging_api.model.mention.Mention;
@@ -32,6 +34,7 @@ public class GroupMessageController {
     private final MessageMapper messageMapper;
 
     private final MentionService mentionService;
+    private final MentionMapper mentionMapper;
 
     private final GroupChatService groupChatService;
 
@@ -86,6 +89,11 @@ public class GroupMessageController {
         List<Mention> mentions = mentionService.saveAll(currentUser, new HashSet<>(mentionedUsers), message);
 
         MessageDTO messageDTO = messageMapper.toDTO(message);
+        List<MentionDTO> mentionDTOS = mentions.stream()
+                .map(mentionMapper::toDTO)
+                .toList();
+
+        wsService.broadcastAll(groupChat, message, mentionDTOS);
         wsService.broadcast(groupChat, messageDTO);
         return messageDTO;
     }

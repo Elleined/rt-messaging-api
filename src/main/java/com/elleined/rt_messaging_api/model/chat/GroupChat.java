@@ -46,4 +46,8 @@ public class GroupChat extends Chat {
                 .map(PrimaryKeyIdentity::getId)
                 .collect(Collectors.toSet());
     }
+
+    public boolean hasReceiver(User receiver) {
+        return this.getReceivers().contains(receiver);
+    }
 }

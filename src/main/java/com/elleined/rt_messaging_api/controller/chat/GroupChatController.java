@@ -119,7 +119,7 @@ public class GroupChatController {
         wsService.broadcast(groupChat, STR."\{currentUser.getName()} added \{receiver.getName()} to the group.");
     }
 
-    @DeleteMapping("/{groupChatId}/remove/{participantId}")
+    @DeleteMapping("/{groupChatId}/receivers/{participantId}")
     public void removeParticipant(@PathVariable("currentUserId") int currentUserId,
                                   @PathVariable("groupChatId") int groupChatId,
                                   @PathVariable("participantId") int participantId) {

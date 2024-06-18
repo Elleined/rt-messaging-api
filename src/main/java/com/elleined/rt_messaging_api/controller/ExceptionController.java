@@ -1,6 +1,7 @@
 package com.elleined.rt_messaging_api.controller;
 
 import com.elleined.rt_messaging_api.dto.APIResponse;
+import com.elleined.rt_messaging_api.exception.chat.ChatException;
 import com.elleined.rt_messaging_api.exception.field.FieldException;
 import com.elleined.rt_messaging_api.exception.mention.MentionException;
 import com.elleined.rt_messaging_api.exception.message.MessageException;
@@ -30,6 +31,7 @@ public class ExceptionController {
             ReactionException.class,
             MentionException.class,
             MessageException.class,
+            ChatException.class,
             SystemException.class,
     })
     public ResponseEntity<APIResponse> handleSystemException(RuntimeException ex) {

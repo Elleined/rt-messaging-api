@@ -81,6 +81,9 @@ public class GroupChatServiceImpl implements GroupChatService {
 
     @Override
     public void addReceiver(User currentUser, GroupChat groupChat, User receiver) {
+        if (groupChat.hasReceiver(receiver))
+            throw new GroupChatException("Cannot add participant! because this receiver already been added!");
+
         if (currentUser.notAllowed(groupChat))
             throw new ResourceNotOwnedException("Cannot add participant! because you cannot :) you already know why right?");
 

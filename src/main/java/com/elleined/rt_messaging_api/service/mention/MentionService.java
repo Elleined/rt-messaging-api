@@ -10,6 +10,7 @@ import java.util.Set;
 
 public interface MentionService extends CustomService<Mention> {
     Mention save(User mentioningUser, User mentionedUser, Message message);
+
     default List<Mention> saveAll(User mentioningUser, Set<User> mentionedUsers, Message message) {
         if (mentionedUsers.isEmpty()) return null;
         return mentionedUsers.stream()

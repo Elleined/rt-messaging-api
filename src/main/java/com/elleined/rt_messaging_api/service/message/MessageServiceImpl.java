@@ -89,7 +89,19 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public void unsent(User currentUser, GroupChat groupChat, Message message) {
+        if (currentUser.notAllowed(groupChat))
+            throw new ResourceNotOwnedException("Cannot unsent message! because you cannot :) you already know why right?");
 
+        if (currentUser.notOwned(message))
+            throw new ResourceNotOwnedException("Cannot unsent message! because you do not owned this message!");
+
+        if (groupChat.notOwned(message))
+            throw new ResourceNotOwnedException("Cannot unsent message! because this chat doesn't have the message!");
+
+        message.setStatus(Message.Status.IN_ACTIVE);
+
+        messageRepository.save(message);
+        log.debug("Message unsent successfully!");
     }
 
     @Override
