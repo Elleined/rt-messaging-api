@@ -81,10 +81,9 @@ public class MessageServiceImpl implements MessageService {
         if (privateChat.notOwned(message))
             throw new ResourceNotOwnedException("Cannot unsent message! because this chat doesn't have the message!");
 
-        currentUser.getMessages().remove(message);
-        privateChat.getMessages().remove(message);
+        message.setStatus(Message.Status.IN_ACTIVE);
 
-        messageRepository.delete(message);
+        messageRepository.save(message);
         log.debug("Message unsent successfully!");
     }
 
