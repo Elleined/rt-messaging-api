@@ -2,7 +2,6 @@ package com.elleined.rt_messaging_api.controller.chat;
 
 import com.elleined.rt_messaging_api.dto.chat.GroupChatDTO;
 import com.elleined.rt_messaging_api.dto.user.UserDTO;
-import com.elleined.rt_messaging_api.exception.resource.ResourceNotFoundException;
 import com.elleined.rt_messaging_api.mapper.chat.GroupChatMapper;
 import com.elleined.rt_messaging_api.mapper.user.UserMapper;
 import com.elleined.rt_messaging_api.model.chat.GroupChat;

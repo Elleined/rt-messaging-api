@@ -27,11 +27,11 @@ public interface UserMapper extends CustomMapper<User, UserDTO> {
             @Mapping(target = "name", source = "name"),
             @Mapping(target = "image", source = "image"),
             @Mapping(target = "receivedGroupChats", expression = "java(new java.util.HashSet<>())"),
+            @Mapping(target = "createdPrivateChats", expression = "java(new java.util.ArrayList<>())"),
             @Mapping(target = "receivedPrivateChats", expression = "java(new java.util.ArrayList<>())"),
             @Mapping(target = "messages", expression = "java(new java.util.ArrayList<>())"),
             @Mapping(target = "reactions", expression = "java(new java.util.ArrayList<>())"),
             @Mapping(target = "receivedMentions", expression = "java(new java.util.ArrayList<>())"),
-
     })
     User toEntity(String name,
                   String image);

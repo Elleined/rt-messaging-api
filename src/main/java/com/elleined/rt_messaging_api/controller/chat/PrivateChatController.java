@@ -31,8 +31,10 @@ public class PrivateChatController {
         User currentUser = userService.getById(currentUserId);
         User receiver = userService.getById(receiverId);
 
-        if (privateChatService.hasExistingChat(currentUser, receiver)) {
-               PrivateChat privateChat = privateChatService.getByCreatorAndReceiver(currentUser, receiver).orElseThrow(() -> new ResourceNotFoundException("Private chat cannot be found! Please contact the developer if this occurs. Thanks"));
+        if (privateChatService.hasExistingChat(currentUser, receiver) ||
+                privateChatService.hasExistingChat(receiver, currentUser)) {
+
+               PrivateChat privateChat = privateChatService.getByCreatorAndReceiver(currentUser, receiver);
                return privateChatMapper.toDTO(privateChat);
         }
 

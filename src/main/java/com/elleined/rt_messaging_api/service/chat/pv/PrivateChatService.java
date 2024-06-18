@@ -15,6 +15,6 @@ public interface PrivateChatService extends ChatService<PrivateChat> {
     boolean hasExistingChat(User creator,
                             User receiver);
 
-    Optional<PrivateChat> getByCreatorAndReceiver(User creator,
+    PrivateChat getByCreatorAndReceiver(User creator,
                                                   User receiver);
 }

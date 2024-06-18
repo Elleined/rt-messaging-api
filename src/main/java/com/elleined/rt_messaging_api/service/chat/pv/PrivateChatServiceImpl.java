@@ -37,7 +37,7 @@ public class PrivateChatServiceImpl implements PrivateChatService {
 
     @Override
     public void delete(User currentUser, PrivateChat privateChat) {
-        if (currentUser.notOwned(privateChat))
+        if (currentUser.notAllowed(privateChat))
             throw new ResourceNotOwnedException("Cannot delete private chat! because you do not owned this conversation");
 
         currentUser.getReceivedPrivateChats().remove(privateChat);
@@ -47,20 +47,24 @@ public class PrivateChatServiceImpl implements PrivateChatService {
 
     @Override
     public boolean hasExistingChat(User creator, User receiver) {
-        return creator.getReceivedPrivateChats().stream()
+        return creator.getCreatedPrivateChats().stream()
                 .map(PrivateChat::getReceiver)
-                .anyMatch(receiver::equals) &&
+                .anyMatch(receiver::equals) ||
 
                 receiver.getReceivedPrivateChats().stream()
-                        .map(PrivateChat::getReceiver)
+                        .map(PrivateChat::getCreator)
                         .anyMatch(creator::equals);
     }
 
     @Override
-    public Optional<PrivateChat> getByCreatorAndReceiver(User creator, User receiver) {
-        return creator.getReceivedPrivateChats().stream()
-                .filter(privateChat -> privateChat.getReceiver().equals(receiver) || privateChat.getCreator().equals(receiver))
-                .findFirst();
+    public PrivateChat getByCreatorAndReceiver(User creator, User receiver) {
+        return privateChatRepository.findAll().stream()
+                .filter(privateChat ->
+                        (privateChat.getCreator().equals(creator) && privateChat.getReceiver().equals(receiver)) ||
+                                (privateChat.getCreator().equals(receiver) && privateChat.getReceiver().equals(creator))
+                )
+                .findFirst()
+                .orElseThrow(() -> new ResourceNotFoundException("Cannot find private chat! This should not be a problem please contact the developer!"));
     }
 
     @Override

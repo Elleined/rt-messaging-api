@@ -2,7 +2,6 @@ package com.elleined.rt_messaging_api.repository.user;
 
 import com.elleined.rt_messaging_api.model.chat.GroupChat;
 import com.elleined.rt_messaging_api.model.chat.PrivateChat;
-import com.elleined.rt_messaging_api.model.mention.Mention;
 import com.elleined.rt_messaging_api.model.user.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

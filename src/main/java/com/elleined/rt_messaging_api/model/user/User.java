@@ -37,6 +37,9 @@ public class User extends PrimaryKeyIdentity {
     private String image;
 
     @OneToMany(mappedBy = "receiver")
+    private List<PrivateChat> createdPrivateChats;
+
+    @OneToMany(mappedBy = "receiver")
     private List<PrivateChat> receivedPrivateChats;
 
     @ManyToMany(mappedBy = "receivers")
