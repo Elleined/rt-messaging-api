@@ -55,6 +55,13 @@ public class Message extends PrimaryKeyIdentity {
     )
     private Chat chat;
 
+    @JoinColumn(
+            name = "status",
+            nullable = false
+    )
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
     @OneToMany(mappedBy = "message")
     private List<Reaction> reactions;
 
@@ -82,5 +89,18 @@ public class Message extends PrimaryKeyIdentity {
 
     public boolean notOwned(Reaction reaction) {
         return !this.getReactions().contains(reaction);
+    }
+
+    public enum Status {
+        ACTIVE,
+        IN_ACTIVE
+    }
+
+    public boolean isActive() {
+        return this.getStatus().equals(Status.ACTIVE);
+    }
+
+    public boolean isInactive() {
+        return this.getStatus().equals(Status.IN_ACTIVE);
     }
 }

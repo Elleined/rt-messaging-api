@@ -3,6 +3,7 @@ package com.elleined.rt_messaging_api.controller;
 import com.elleined.rt_messaging_api.dto.APIResponse;
 import com.elleined.rt_messaging_api.exception.field.FieldException;
 import com.elleined.rt_messaging_api.exception.mention.MentionException;
+import com.elleined.rt_messaging_api.exception.message.MessageException;
 import com.elleined.rt_messaging_api.exception.reaction.ReactionException;
 import com.elleined.rt_messaging_api.exception.resource.ResourceException;
 import jakarta.transaction.SystemException;
@@ -28,6 +29,7 @@ public class ExceptionController {
             FieldException.class,
             ReactionException.class,
             MentionException.class,
+            MessageException.class,
             SystemException.class,
     })
     public ResponseEntity<APIResponse> handleSystemException(RuntimeException ex) {

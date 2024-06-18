@@ -1,5 +1,6 @@
 package com.elleined.rt_messaging_api.service.reaction;
 
+import com.elleined.rt_messaging_api.exception.message.MessageException;
 import com.elleined.rt_messaging_api.exception.resource.ResourceNotFoundException;
 import com.elleined.rt_messaging_api.exception.resource.ResourceNotOwnedException;
 import com.elleined.rt_messaging_api.mapper.reaction.ReactionMapper;
@@ -29,6 +30,9 @@ public class ReactionServiceImpl implements ReactionService {
 
     @Override
     public Reaction save(User creator, Reaction.Emoji emoji, Message message) {
+        if (message.isInactive())
+            throw new MessageException("Cannot save reaction! because message is already been deleted or inactive!");
+
         Reaction reaction = reactionMapper.toEntity(creator, emoji, message);
 
         reactionRepository.save(reaction);
@@ -38,6 +42,9 @@ public class ReactionServiceImpl implements ReactionService {
 
     @Override
     public List<Reaction> getAll(User currentUser, Chat chat, Message message, Pageable pageable) {
+        if (message.isInactive())
+            throw new MessageException("Cannot get all reaction! because message is already been deleted or inactive!");
+
         if (chat.notOwned(message))
             throw new ResourceNotOwnedException("Cannot get all reaction! because chat doesn't have this message!");
 
@@ -46,6 +53,9 @@ public class ReactionServiceImpl implements ReactionService {
 
     @Override
     public void update(User currentUser, Chat chat, Message message, Reaction reaction, Reaction.Emoji emoji) {
+        if (message.isInactive())
+            throw new MessageException("Cannot update reaction! because message is already been deleted or inactive!");
+
         if (chat.notOwned(message))
             throw new ResourceNotOwnedException("Cannot update reaction! because chat doesn't have this message!");
 
@@ -63,6 +73,9 @@ public class ReactionServiceImpl implements ReactionService {
 
     @Override
     public void delete(User currentUser, Chat chat, Message message, Reaction reaction) {
+        if (message.isInactive())
+            throw new MessageException("Cannot delete reaction! because message is already been deleted or inactive!");
+
         if (chat.notOwned(message))
             throw new ResourceNotOwnedException("Cannot delete reaction! because chat doesn't have this message!");
 
@@ -81,6 +94,9 @@ public class ReactionServiceImpl implements ReactionService {
 
     @Override
     public boolean isAlreadyReactedTo(User currentUser, Chat chat, Message message) {
+        if (message.isInactive())
+            throw new MessageException("Cannot get is already reacted to reaction! because message is already been deleted or inactive!");
+
         return message.getReactions().stream()
                 .map(Reaction::getCreator)
                 .anyMatch(currentUser::equals);
@@ -88,6 +104,9 @@ public class ReactionServiceImpl implements ReactionService {
 
     @Override
     public Reaction getByUser(User currentUser, Chat chat, Message message) {
+        if (message.isInactive())
+            throw new MessageException("Cannot get reaction by user! because message is already been deleted or inactive!");
+
         return message.getReactions().stream()
                 .filter(reaction -> reaction.getCreator().equals(currentUser))
                 .findFirst()

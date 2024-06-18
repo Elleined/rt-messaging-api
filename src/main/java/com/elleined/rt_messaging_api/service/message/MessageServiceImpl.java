@@ -31,7 +31,9 @@ public class MessageServiceImpl implements MessageService {
         if (currentUser.notAllowed(groupChat))
             throw new ResourceNotOwnedException("Cannot get all messages! because you cannot :) you already know why right?");
 
-        return messageRepository.findAll(groupChat, pageable).getContent();
+        return messageRepository.findAll(groupChat, pageable).stream()
+                .filter(Message::isActive)
+                .toList();
     }
 
     @Override
@@ -39,7 +41,9 @@ public class MessageServiceImpl implements MessageService {
         if (currentUser.notAllowed(privateChat))
             throw new ResourceNotOwnedException("Cannot get all messages! because you cannot :) you already know why right?");
 
-        return messageRepository.findAll(privateChat, pageable).getContent();
+        return messageRepository.findAll(privateChat, pageable).stream()
+                .filter(Message::isActive)
+                .toList();
     }
 
     @Override
@@ -67,17 +71,26 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public void unsent(User currentUser, Chat chat, Message message) {
+    public void unsent(User currentUser, PrivateChat privateChat, Message message) {
+        if (currentUser.notAllowed(privateChat))
+            throw new ResourceNotOwnedException("Cannot unsent message! because you cannot :) you already know why right?");
+
         if (currentUser.notOwned(message))
-            throw new ResourceNotOwnedException("");
+            throw new ResourceNotOwnedException("Cannot unsent message! because you do not owned this message!");
 
-        if (chat.notOwned(message))
-            throw new ResourceNotOwnedException("Cannot unsent message! because this chat doesn't have the message");
+        if (privateChat.notOwned(message))
+            throw new ResourceNotOwnedException("Cannot unsent message! because this chat doesn't have the message!");
 
-        chat.getMessages().remove(message);
+        currentUser.getMessages().remove(message);
+        privateChat.getMessages().remove(message);
 
         messageRepository.delete(message);
         log.debug("Message unsent successfully!");
+    }
+
+    @Override
+    public void unsent(User currentUser, GroupChat groupChat, Message message) {
+
     }
 
     @Override

@@ -12,7 +12,8 @@ import org.mapstruct.Mappings;
 @Mapper(
         componentModel = "spring",
         imports = {
-                Message.ContentType.class
+                Message.ContentType.class,
+                Message.Status.class
         }
 )
 public interface MessageMapper extends CustomMapper<Message, MessageDTO> {
@@ -24,6 +25,7 @@ public interface MessageMapper extends CustomMapper<Message, MessageDTO> {
             @Mapping(target = "creatorId", source = "creator.id"),
             @Mapping(target = "content", source = "content"),
             @Mapping(target = "contentType", source = "contentType"),
+            @Mapping(target = "status", source = "status"),
             @Mapping(target = "chatId", source = "chat.id"),
             @Mapping(target = "reactionIds", expression = "java(message.reactionIds())"),
             @Mapping(target = "mentionIds", expression = "java(message.mentionIds())"),
@@ -37,6 +39,7 @@ public interface MessageMapper extends CustomMapper<Message, MessageDTO> {
             @Mapping(target = "creator", source = "creator"),
             @Mapping(target = "content", source = "content"),
             @Mapping(target = "contentType", source = "contentType"),
+            @Mapping(target = "status", expression = "java(Status.ACTIVE)"),
             @Mapping(target = "chat", source = "chat"),
             @Mapping(target = "reactions", expression = "java(new java.util.ArrayList<>())"),
             @Mapping(target = "mentions", expression = "java(new java.util.ArrayList<>())"),

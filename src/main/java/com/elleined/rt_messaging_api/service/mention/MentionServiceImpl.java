@@ -1,5 +1,6 @@
 package com.elleined.rt_messaging_api.service.mention;
 
+import com.elleined.rt_messaging_api.exception.message.MessageException;
 import com.elleined.rt_messaging_api.exception.resource.ResourceNotFoundException;
 import com.elleined.rt_messaging_api.mapper.mention.MentionMapper;
 import com.elleined.rt_messaging_api.model.PrimaryKeyIdentity;
@@ -25,6 +26,9 @@ public class MentionServiceImpl implements MentionService {
 
     @Override
     public Mention save(User mentioningUser, User mentionedUser, Message message) {
+        if (message.isInactive())
+            throw new MessageException("Cannot save mention! because message is already been deleted or inactive!");
+
         Mention mention = mentionMapper.toEntity(mentioningUser, mentionedUser, message);
         mentionRepository.save(mention);
         log.debug("Saving mention success");

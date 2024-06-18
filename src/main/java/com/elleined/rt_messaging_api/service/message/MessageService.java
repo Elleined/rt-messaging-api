@@ -25,6 +25,8 @@ public interface MessageService extends CustomService<Message> {
                  Message.ContentType contentType);
 
 
-    void unsent(User currentUser, Chat chat, Message message);
+    void unsent(User currentUser, PrivateChat privateChat, Message message);
+    void unsent(User currentUser, GroupChat groupChat, Message message);
+
     void removeForYou(User currentUser, Chat chat, Message message);
 }

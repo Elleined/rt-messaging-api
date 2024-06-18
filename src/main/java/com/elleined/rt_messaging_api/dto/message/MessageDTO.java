@@ -17,6 +17,7 @@ public class MessageDTO extends DTO {
     private int creatorId;
     private String content;
     private Message.ContentType contentType;
+    private Message.Status status;
     private int chatId;
     private List<Integer> reactionIds;
     private List<Integer> mentionIds;
