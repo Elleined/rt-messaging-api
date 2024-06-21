@@ -9,10 +9,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Entity
+@Table(
+        name = "tbl_chat",
+        indexes = @Index(name = "created_at_idx", columnList = "created_at")
+)
 @Inheritance(strategy = InheritanceType.JOINED)
 @Getter
 @Setter
@@ -32,6 +37,22 @@ public abstract class Chat extends PrimaryKeyIdentity {
     @OneToMany(mappedBy = "chat")
     private List<Message> messages;
 
+    @ElementCollection
+    @CollectionTable(
+            name = "tbl_nickname",
+            joinColumns = @JoinColumn(
+                    name = "chat_id",
+                    referencedColumnName = "id",
+                    nullable = false
+            )
+    )
+    @Column(
+            name = "nickname",
+            nullable = false,
+            unique = true
+    )
+    private Map<User, String> nicknames;
+
     public List<Integer> messageIds() {
         return this.getMessages().stream()
                 .map(PrimaryKeyIdentity::getId)
@@ -40,5 +61,21 @@ public abstract class Chat extends PrimaryKeyIdentity {
 
     public boolean notOwned(Message message) {
         return !this.getMessages().contains(message);
+    }
+
+    public void setNickname(User user, String nickname) {
+        this.getNicknames().put(user, nickname);
+    }
+
+    public String getNickname(User user) {
+        return this.getNicknames().get(user);
+    }
+
+    public Map<Integer, String> getNicknameDTOs() {
+        Map<Integer, String> userIdNicknames = new HashMap<>();
+        for (Map.Entry<User, String> entry : nicknames.entrySet()) {
+            userIdNicknames.put(entry.getKey().getId(), entry.getValue());
+        }
+        return userIdNicknames;
     }
 }

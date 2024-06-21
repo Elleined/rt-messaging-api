@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -70,6 +69,19 @@ public class PrivateChatServiceImpl implements PrivateChatService {
     @Override
     public List<PrivateChat> getAll(User currentUser, Pageable pageable) {
         return userRepository.findAllPrivateChats(currentUser, pageable).getContent();
+    }
+
+    @Override
+    public void setNickname(User currentUser, PrivateChat chat, User nicknamedUser, String nickname) {
+         if (nicknamedUser.notAllowed(chat))
+             throw new ResourceNotOwnedException("Cannot set nickname! because you cannot :) you already know why right?");
+
+        if (currentUser.notAllowed(chat))
+            throw new ResourceNotOwnedException("Cannot set nickname! because you cannot :) you already know why right?");
+
+         chat.setNickname(nicknamedUser, nickname);
+         privateChatRepository.save(chat);
+         log.debug("User with id of {} has now nickname of {}", nicknamedUser.getId(), nickname);
     }
 
     @Override

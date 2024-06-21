@@ -7,6 +7,7 @@ import com.elleined.rt_messaging_api.model.chat.PrivateChat;
 import com.elleined.rt_messaging_api.model.user.User;
 import com.elleined.rt_messaging_api.service.chat.pv.PrivateChatService;
 import com.elleined.rt_messaging_api.service.user.UserService;
+import com.elleined.rt_messaging_api.ws.WSService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +24,8 @@ public class PrivateChatController {
 
     private final PrivateChatService privateChatService;
     private final PrivateChatMapper privateChatMapper;
+
+    private final WSService wsService;
 
     @GetMapping
     public List<PrivateChatDTO> getAll(@PathVariable("currentUserId") int currentUserId,
@@ -47,5 +50,24 @@ public class PrivateChatController {
         PrivateChat privateChat = privateChatService.getById(privateChatId);
 
         privateChatService.delete(currentUser, privateChat);
+    }
+
+    @PostMapping("/{privateChatId}/nicknames/{nicknamedUserId}")
+    public String setNickname(@PathVariable("currentUserId") int currentUserId,
+                              @PathVariable("privateChatId") int privateChatId,
+                              @PathVariable("nicknamedUserId") int nicknamedUserId,
+                              @RequestParam("nickname") String nickname) {
+
+        User currentUser = userService.getById(currentUserId);
+        User nicknamedUser = userService.getById(nicknamedUserId);
+        PrivateChat privateChat = privateChatService.getById(privateChatId);
+
+        privateChatService.setNickname(currentUser, privateChat, nicknamedUser, nickname);
+
+        String announcement = currentUser == nicknamedUser
+                ? STR."\{currentUser.getName()} set his own nickname to: \{nickname}"
+                : STR."\{currentUser.getName()} set \{nicknamedUser.getName()} nickname to: \{nickname}";
+        wsService.broadcast(privateChat, announcement);
+        return nickname;
     }
 }

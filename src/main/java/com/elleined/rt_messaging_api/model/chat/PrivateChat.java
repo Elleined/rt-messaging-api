@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.util.Map;
+
 @Entity
 @Table(name = "tbl_private_chat")
 @Getter

@@ -61,6 +61,7 @@ public class PrivateMessageController {
 
         MessageDTO messageDTO = messageMapper.toDTO(message);
         wsService.broadcast(privateChat, messageDTO);
+        wsService.broadcast(privateChat, STR."\{currentUser.getName()} unsent a message.");
     }
 
     @PostMapping("/messages/{receiverId}")

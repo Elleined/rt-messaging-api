@@ -9,4 +9,5 @@ import java.util.List;
 
 public interface ChatService<T extends Chat> extends CustomService<T> {
     List<T> getAll(User currentUser, Pageable pageable);
+    void setNickname(User currentUser, T chat, User nicknamedUser, String nickname);
 }

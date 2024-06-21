@@ -19,6 +19,7 @@ public interface GroupChatMapper extends CustomMapper<GroupChat, GroupChatDTO> {
             @Mapping(target = "createdAt", source = "createdAt"),
             @Mapping(target = "creatorId", source = "creator.id"),
             @Mapping(target = "messageIds", expression = "java(groupChat.messageIds())"),
+            @Mapping(target = "nicknames", expression = "java(groupChat.getNicknameDTOs())"),
             @Mapping(target = "receiverIds", expression = "java(groupChat.receiverIds())")
     })
     GroupChatDTO toDTO(GroupChat groupChat);
@@ -28,6 +29,7 @@ public interface GroupChatMapper extends CustomMapper<GroupChat, GroupChatDTO> {
             @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())"),
             @Mapping(target = "creator", source = "creator"),
             @Mapping(target = "messages", expression = "java(new java.util.ArrayList<>())"),
+            @Mapping(target = "nicknames", expression = "java(new java.util.HashMap<>())"),
             @Mapping(target = "name", source = "name"),
             @Mapping(target = "picture", source = "picture"),
             @Mapping(target = "receivers", source = "receivers"),

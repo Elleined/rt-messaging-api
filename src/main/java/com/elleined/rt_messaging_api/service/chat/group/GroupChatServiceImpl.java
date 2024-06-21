@@ -119,6 +119,19 @@ public class GroupChatServiceImpl implements GroupChatService {
     }
 
     @Override
+    public void setNickname(User currentUser, GroupChat chat, User nicknamedUser, String nickname) {
+        if (nicknamedUser.notAllowed(chat))
+            throw new ResourceNotOwnedException("Cannot set nickname! because you cannot :) you already know why right?");
+
+        if (currentUser.notAllowed(chat))
+            throw new ResourceNotOwnedException("Cannot set nickname! because you cannot :) you already know why right?");
+
+        chat.setNickname(nicknamedUser, nickname);
+        groupChatRepository.save(chat);
+        log.debug("User with id of {} has now nickname of {}", nicknamedUser.getId(), nickname);
+    }
+
+    @Override
     public GroupChat getById(int id) throws ResourceNotFoundException {
         return groupChatRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Group chat with id of " + id + " doesn't exists!"));
     }

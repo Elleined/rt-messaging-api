@@ -7,6 +7,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -15,4 +16,5 @@ import java.util.List;
 public class ChatDTO extends DTO {
     private int creatorId;
     private List<Integer> messageIds;
+    private Map<Integer, String> nicknames;
 }

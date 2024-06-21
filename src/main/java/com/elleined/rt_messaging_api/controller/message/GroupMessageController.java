@@ -71,6 +71,7 @@ public class GroupMessageController {
 
         MessageDTO messageDTO = messageMapper.toDTO(message);
         wsService.broadcast(groupChat, messageDTO);
+        wsService.broadcast(groupChat, STR."\{currentUser.getName()} unsent a message.");
     }
 
     @PostMapping

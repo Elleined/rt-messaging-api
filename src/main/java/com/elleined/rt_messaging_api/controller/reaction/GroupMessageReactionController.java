@@ -1,7 +1,6 @@
 package com.elleined.rt_messaging_api.controller.reaction;
 
 import com.elleined.rt_messaging_api.dto.reaction.ReactionDTO;
-import com.elleined.rt_messaging_api.exception.resource.ResourceNotFoundException;
 import com.elleined.rt_messaging_api.mapper.reaction.ReactionMapper;
 import com.elleined.rt_messaging_api.model.chat.GroupChat;
 import com.elleined.rt_messaging_api.model.message.Message;
@@ -23,7 +22,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/users/{currentUserId}/group-chats/{chatId}/messages/{messageId}/reactions")
 @RequiredArgsConstructor
-public class GroupChatReactionController {
+public class GroupMessageReactionController {
     private final UserService userService;
 
     private final GroupChatService groupChatService;
@@ -34,19 +33,6 @@ public class GroupChatReactionController {
     private final ReactionMapper reactionMapper;
 
     private final WSService wsService;
-
-    @GetMapping("/{reactionId}")
-    public ReactionDTO getById(@PathVariable("reactionId") int reactionId) throws ResourceNotFoundException {
-        Reaction reaction = reactionService.getById(reactionId);
-        return reactionMapper.toDTO(reaction);
-    }
-
-    @GetMapping("/get-all-by-id")
-    public List<ReactionDTO> getAllById(@RequestBody List<Integer> ids) {
-        return reactionService.getAllById(ids).stream()
-                .map(reactionMapper::toDTO)
-                .toList();
-    }
 
     @PostMapping
     public ReactionDTO save(@PathVariable("currentUserId") int currentUserId,
@@ -65,7 +51,7 @@ public class GroupChatReactionController {
         }
 
         Reaction reaction = reactionService.save(currentUser, groupChat, emoji, message);
-        ReactionDTO reactionDTO =  reactionMapper.toDTO(reaction);
+        ReactionDTO reactionDTO = reactionMapper.toDTO(reaction);
         wsService.broadcast(groupChat, message, reactionDTO);
         return reactionDTO;
     }
