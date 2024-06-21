@@ -64,7 +64,7 @@ public class GroupChatReactionController {
             return reactionMapper.toDTO(reaction);
         }
 
-        Reaction reaction = reactionService.save(currentUser, emoji, message);
+        Reaction reaction = reactionService.save(currentUser, groupChat, emoji, message);
         ReactionDTO reactionDTO =  reactionMapper.toDTO(reaction);
         wsService.broadcast(groupChat, message, reactionDTO);
         return reactionDTO;

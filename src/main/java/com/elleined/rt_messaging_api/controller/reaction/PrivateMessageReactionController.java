@@ -1,7 +1,6 @@
 package com.elleined.rt_messaging_api.controller.reaction;
 
 import com.elleined.rt_messaging_api.dto.reaction.ReactionDTO;
-import com.elleined.rt_messaging_api.exception.resource.ResourceNotFoundException;
 import com.elleined.rt_messaging_api.mapper.reaction.ReactionMapper;
 import com.elleined.rt_messaging_api.model.chat.PrivateChat;
 import com.elleined.rt_messaging_api.model.message.Message;
@@ -51,7 +50,7 @@ public class PrivateMessageReactionController {
             return reactionMapper.toDTO(reaction);
         }
 
-        Reaction reaction = reactionService.save(currentUser, emoji, message);
+        Reaction reaction = reactionService.save(currentUser, privateChat, emoji, message);
         ReactionDTO reactionDTO =  reactionMapper.toDTO(reaction);
         wsService.broadcast(privateChat, message, reactionDTO);
         return reactionDTO;

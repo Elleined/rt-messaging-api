@@ -24,24 +24,6 @@ public class PrivateChatController {
     private final PrivateChatService privateChatService;
     private final PrivateChatMapper privateChatMapper;
 
-    @PostMapping
-    private PrivateChatDTO getOrSave(@PathVariable("currentUserId") int currentUserId,
-                                     @RequestParam("receiverId") int receiverId) {
-
-        User currentUser = userService.getById(currentUserId);
-        User receiver = userService.getById(receiverId);
-
-        if (privateChatService.hasExistingChat(currentUser, receiver) ||
-                privateChatService.hasExistingChat(receiver, currentUser)) {
-
-               PrivateChat privateChat = privateChatService.getByCreatorAndReceiver(currentUser, receiver);
-               return privateChatMapper.toDTO(privateChat);
-        }
-
-        PrivateChat privateChat = privateChatService.save(currentUser, receiver);
-        return privateChatMapper.toDTO(privateChat);
-    }
-
     @GetMapping
     public List<PrivateChatDTO> getAll(@PathVariable("currentUserId") int currentUserId,
                                        @RequestParam(required = false, defaultValue = "1", value = "pageNumber") int pageNumber,

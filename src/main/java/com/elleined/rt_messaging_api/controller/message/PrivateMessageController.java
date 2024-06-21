@@ -19,7 +19,7 @@ import org.springframework.web.util.HtmlUtils;
 import java.util.List;
 
 @RestController
-@RequestMapping("/users/{currentUserId}/private-chats/{privateChatId}/messages")
+@RequestMapping("/users/{currentUserId}")
 @RequiredArgsConstructor
 public class PrivateMessageController {
     private final UserService userService;
@@ -31,7 +31,7 @@ public class PrivateMessageController {
 
     private final WSService wsService;
 
-    @GetMapping
+    @GetMapping("/private-chats/{privateChatId}/messages")
     public List<MessageDTO> getAllMessage(@PathVariable("currentUserId") int currentUserId,
                                           @PathVariable("privateChatId") int privateChatId,
                                           @RequestParam(required = false, defaultValue = "1", value = "pageNumber") int pageNumber,
@@ -48,7 +48,7 @@ public class PrivateMessageController {
                 .toList();
     }
 
-    @DeleteMapping("/{messageId}/unsent")
+    @DeleteMapping("/private-chats/{privateChatId}/messages/{messageId}/unsent")
     public void unsent(@PathVariable("currentUserId") int currentUserId,
                        @PathVariable("privateChatId") int privateChatId,
                        @PathVariable("messageId") int messageId) {
@@ -63,18 +63,28 @@ public class PrivateMessageController {
         wsService.broadcast(privateChat, messageDTO);
     }
 
-    @PostMapping
+    @PostMapping("/messages/{receiverId}")
     public MessageDTO save(@PathVariable("currentUserId") int currentUserId,
-                           @PathVariable("privateChatId") int privateChatId,
+                           @PathVariable("receiverId") int receiverId,
                            @RequestParam("content") String content,
                            @RequestParam("contentType") Message.ContentType contentType) {
 
         User currentUser = userService.getById(currentUserId);
-        PrivateChat privateChat = privateChatService.getById(privateChatId);
-        String sanitizeContent = HtmlUtils.htmlEscape(content);
+        User receiver = userService.getById(receiverId);
+        String sanitizedContent = HtmlUtils.htmlEscape(content);
 
-        Message message = messageService.save(currentUser, privateChat, sanitizeContent, contentType);
+        if (privateChatService.hasExistingChat(currentUser, receiver) ||
+                privateChatService.hasExistingChat(receiver, currentUser)) {
 
+            PrivateChat privateChat = privateChatService.getByCreatorAndReceiver(currentUser, receiver);
+            Message message = messageService.save(currentUser, privateChat, sanitizedContent, contentType);
+            MessageDTO messageDTO = messageMapper.toDTO(message);
+            wsService.broadcast(privateChat, messageDTO);
+            return messageDTO;
+        }
+
+        PrivateChat privateChat = privateChatService.save(currentUser, receiver);
+        Message message = messageService.save(currentUser, privateChat, sanitizedContent, contentType);
         MessageDTO messageDTO = messageMapper.toDTO(message);
         wsService.broadcast(privateChat, messageDTO);
         return messageDTO;
