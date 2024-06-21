@@ -16,5 +16,6 @@ import java.util.Map;
 public class ChatDTO extends DTO {
     private int creatorId;
     private List<Integer> messageIds;
+    private List<Integer> pinMessageIds;
     private Map<Integer, String> nicknames;
 }

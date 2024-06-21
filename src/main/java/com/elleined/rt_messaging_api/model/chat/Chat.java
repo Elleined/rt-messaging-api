@@ -2,6 +2,7 @@ package com.elleined.rt_messaging_api.model.chat;
 
 import com.elleined.rt_messaging_api.model.PrimaryKeyIdentity;
 import com.elleined.rt_messaging_api.model.message.Message;
+import com.elleined.rt_messaging_api.model.message.PinMessage;
 import com.elleined.rt_messaging_api.model.user.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -10,7 +11,6 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 @Entity
@@ -37,6 +37,9 @@ public abstract class Chat extends PrimaryKeyIdentity {
     @OneToMany(mappedBy = "chat")
     private List<Message> messages;
 
+    @OneToMany(mappedBy = "chat")
+    private List<PinMessage> pinMessages;
+
     @ElementCollection
     @CollectionTable(
             name = "tbl_nickname",
@@ -59,8 +62,24 @@ public abstract class Chat extends PrimaryKeyIdentity {
                 .toList();
     }
 
+    public List<Integer> pinMessageIds() {
+        return this.getPinMessages().stream()
+                .map(PrimaryKeyIdentity::getId)
+                .toList();
+    }
+
     public boolean notOwned(Message message) {
         return !this.getMessages().contains(message);
+    }
+
+    public boolean notOwned(PinMessage pinMessage) {
+        return !this.getPinMessages().contains(pinMessage);
+    }
+
+    public boolean isPinnedAlready(Message message) {
+        return this.getPinMessages().stream()
+                .map(PinMessage::getMessage)
+                .anyMatch(message::equals);
     }
 
     public void setNickname(User user, String nickname) {

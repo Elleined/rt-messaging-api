@@ -5,6 +5,7 @@ import com.elleined.rt_messaging_api.dto.user.UserDTO;
 import com.elleined.rt_messaging_api.mapper.chat.GroupChatMapper;
 import com.elleined.rt_messaging_api.mapper.user.UserMapper;
 import com.elleined.rt_messaging_api.model.chat.GroupChat;
+import com.elleined.rt_messaging_api.model.chat.PrivateChat;
 import com.elleined.rt_messaging_api.model.user.User;
 import com.elleined.rt_messaging_api.service.chat.group.GroupChatService;
 import com.elleined.rt_messaging_api.service.user.UserService;
@@ -146,5 +147,24 @@ public class GroupChatController {
         return groupChatService.getAll(currentUser, pageable).stream()
                 .map(groupChatMapper::toDTO)
                 .toList();
+    }
+
+    @PostMapping("/{groupChatId}/nicknames/{nicknamedUserId}")
+    public String setNickname(@PathVariable("currentUserId") int currentUserId,
+                              @PathVariable("groupChatId") int groupChatId,
+                              @PathVariable("nicknamedUserId") int nicknamedUserId,
+                              @RequestParam("nickname") String nickname) {
+
+        User currentUser = userService.getById(currentUserId);
+        User nicknamedUser = userService.getById(nicknamedUserId);
+        GroupChat groupChat = groupChatService.getById(groupChatId);
+
+        groupChatService.setNickname(currentUser, groupChat, nicknamedUser, nickname);
+
+        String announcement = currentUser == nicknamedUser
+                ? STR."\{currentUser.getName()} set his own nickname to: \{nickname}"
+                : STR."\{currentUser.getName()} set \{nicknamedUser.getName()} nickname to: \{nickname}";
+        wsService.broadcast(groupChat, announcement);
+        return nickname;
     }
 }

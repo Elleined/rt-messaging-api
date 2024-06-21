@@ -17,6 +17,7 @@ public interface PrivateChatMapper extends CustomMapper<PrivateChat, PrivateChat
             @Mapping(target = "createdAt", source = "createdAt"),
             @Mapping(target = "creatorId", source = "creator.id"),
             @Mapping(target = "messageIds", expression = "java(privateChat.messageIds())"),
+            @Mapping(target = "pinMessageIds", expression = "java(privateChat.pinMessageIds())"),
             @Mapping(target = "nicknames", expression = "java(privateChat.getNicknameDTOs())"),
             @Mapping(target = "receiverId", source = "receiver.id")
     })
@@ -27,6 +28,7 @@ public interface PrivateChatMapper extends CustomMapper<PrivateChat, PrivateChat
             @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())"),
             @Mapping(target = "creator", source = "creator"),
             @Mapping(target = "messages", expression = "java(new java.util.ArrayList<>())"),
+            @Mapping(target = "pinMessages", expression = "java(new java.util.ArrayList<>())"),
             @Mapping(target = "nicknames", expression = "java(new java.util.HashMap<>())"),
             @Mapping(target = "receiver", source = "receiver"),
     })
