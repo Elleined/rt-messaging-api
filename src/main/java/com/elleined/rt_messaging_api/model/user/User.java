@@ -5,6 +5,8 @@ import com.elleined.rt_messaging_api.model.chat.GroupChat;
 import com.elleined.rt_messaging_api.model.chat.PrivateChat;
 import com.elleined.rt_messaging_api.model.mention.Mention;
 import com.elleined.rt_messaging_api.model.message.Message;
+import com.elleined.rt_messaging_api.model.poll.Option;
+import com.elleined.rt_messaging_api.model.poll.Poll;
 import com.elleined.rt_messaging_api.model.reaction.Reaction;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -54,6 +56,28 @@ public class User extends PrimaryKeyIdentity {
     @OneToMany(mappedBy = "mentionedUser")
     private List<Mention> receivedMentions;
 
+    @OneToMany(mappedBy = "creator")
+    private List<Poll> createdPolls;
+
+    @OneToMany(mappedBy = "creator")
+    private List<Option> createdOptions;
+
+    @ManyToMany
+    @JoinTable(
+            name = "tbl_option_vote",
+            joinColumns = @JoinColumn(
+                    name = "user_id",
+                    referencedColumnName = "id",
+                    nullable = false
+            ),
+            inverseJoinColumns = @JoinColumn(
+                    name = "option_id",
+                    referencedColumnName = "id",
+                    nullable = false
+            )
+    )
+    private Set<Option> votedOptions;
+
     public List<Integer> privateChatIds() {
         return this.getReceivedPrivateChats().stream()
                 .map(PrimaryKeyIdentity::getId)
@@ -73,6 +97,14 @@ public class User extends PrimaryKeyIdentity {
     public boolean notOwned(Message message) {
         return !this.getMessages().contains(message);
     }
+    public boolean notOwned(Poll poll) {
+        return !this.getCreatedPolls().contains(poll);
+    }
+
+    public boolean notOwned(Option option) {
+        return !this.getCreatedOptions().contains(option);
+    }
+
 
     public boolean notAllowed(PrivateChat privateChat) {
         return !privateChat.getCreator().equals(this) &&

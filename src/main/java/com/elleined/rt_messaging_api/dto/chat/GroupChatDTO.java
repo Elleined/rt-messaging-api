@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -14,5 +15,6 @@ import java.util.Set;
 public class GroupChatDTO extends ChatDTO {
     private String name;
     private String picture;
+    private List<Integer> pollIds;
     private Set<Integer> receiverIds;
 }
