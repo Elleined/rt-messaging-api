@@ -10,6 +10,7 @@ import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(
@@ -49,10 +50,10 @@ public class Option extends PrimaryKeyIdentity {
     @ManyToMany(mappedBy = "votedOptions")
     private Set<User> votingUsers;
 
-    public List<Integer> votingUserIds() {
+    public Set<Integer> votingUserIds() {
         return this.getVotingUsers().stream()
                 .map(PrimaryKeyIdentity::getId)
-                .toList();
+                .collect(Collectors.toSet());
     }
 
     public boolean isAlreadyVoted(User user) {

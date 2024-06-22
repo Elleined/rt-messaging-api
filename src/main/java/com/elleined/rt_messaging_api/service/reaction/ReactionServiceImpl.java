@@ -4,7 +4,6 @@ import com.elleined.rt_messaging_api.exception.message.MessageException;
 import com.elleined.rt_messaging_api.exception.resource.ResourceNotFoundException;
 import com.elleined.rt_messaging_api.exception.resource.ResourceNotOwnedException;
 import com.elleined.rt_messaging_api.mapper.reaction.ReactionMapper;
-import com.elleined.rt_messaging_api.model.chat.Chat;
 import com.elleined.rt_messaging_api.model.chat.GroupChat;
 import com.elleined.rt_messaging_api.model.chat.PrivateChat;
 import com.elleined.rt_messaging_api.model.message.Message;

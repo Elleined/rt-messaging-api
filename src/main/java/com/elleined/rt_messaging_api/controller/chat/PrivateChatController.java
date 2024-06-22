@@ -1,7 +1,6 @@
 package com.elleined.rt_messaging_api.controller.chat;
 
 import com.elleined.rt_messaging_api.dto.chat.PrivateChatDTO;
-import com.elleined.rt_messaging_api.exception.resource.ResourceNotFoundException;
 import com.elleined.rt_messaging_api.mapper.chat.PrivateChatMapper;
 import com.elleined.rt_messaging_api.model.chat.PrivateChat;
 import com.elleined.rt_messaging_api.model.user.User;

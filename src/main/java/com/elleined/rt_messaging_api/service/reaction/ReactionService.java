@@ -1,6 +1,5 @@
 package com.elleined.rt_messaging_api.service.reaction;
 
-import com.elleined.rt_messaging_api.model.chat.Chat;
 import com.elleined.rt_messaging_api.model.chat.GroupChat;
 import com.elleined.rt_messaging_api.model.chat.PrivateChat;
 import com.elleined.rt_messaging_api.model.message.Message;
