@@ -59,9 +59,6 @@ public class OptionServiceImpl implements OptionService {
 
     @Override
     public void vote(User currentUser, GroupChat groupChat, Poll poll, Option option) {
-        if (this.isAlreadyVoted(option, currentUser))
-            throw new ResourceAlreadyExistsException("Cannot vote to this option! because you already voted this. Choose other options :)");
-
         if (currentUser.notAllowed(groupChat))
             throw new ResourceNotOwnedException("Cannot vote to this option! because you cannot :) you already know why right?");
 
@@ -84,15 +81,12 @@ public class OptionServiceImpl implements OptionService {
     }
 
     @Override
-    public Optional<Option> getByUser(User currentUser, GroupChat groupChat, Poll poll, Option option) {
+    public Optional<Option> getByUser(User currentUser, GroupChat groupChat, Poll poll) {
         if (currentUser.notAllowed(groupChat))
             throw new ResourceNotOwnedException("Cannot get by user! because you cannot :) you already know why right?");
 
         if (groupChat.notOwned(poll))
             throw new ResourceNotOwnedException("Cannot get by user! because group chat doesn't have this poll!");
-
-        if (poll.notOwned(option))
-            throw new ResourceNotOwnedException("Cannot get by user! because poll doesn't have this option!");
 
         return poll.getOptions().stream()
                 .filter(pollOptions -> pollOptions.getVotingUsers().contains(currentUser))

@@ -31,18 +31,17 @@ public interface OptionService extends CustomService<Option> {
 
     Optional<Option> getByUser(User currentUser,
                                GroupChat groupChat,
-                               Poll poll,
-                               Option option);
+                               Poll poll);
 
     default boolean isAlreadyVoted(Option option, User user) {
         return option.getVotingUsers().contains(user);
     }
 
-    default boolean hasNotBeenVoted(User currentUser, GroupChat groupChat, Poll poll) {
+    default boolean isAlreadyVoted(User currentUser, GroupChat groupChat, Poll poll) {
         return poll.getOptions().stream()
                 .map(Option::getVotingUsers)
                 .flatMap(Collection::stream)
-                .noneMatch(currentUser::equals);
+                .anyMatch(currentUser::equals);
     }
 
     default List<Option> saveAll(User creator,

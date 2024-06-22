@@ -64,18 +64,18 @@ public class OptionController {
         Poll poll = pollService.getById(pollId);
         Option selectedOption = optionService.getById(optionId);
 
-        if (optionService.hasNotBeenVoted(currentUser, groupChat, poll)) {
+        if (optionService.isAlreadyVoted(currentUser, groupChat, poll)) {
+            Option choosenOption = optionService.getByUser(currentUser, groupChat, poll)
+                    .orElseThrow(() -> new ResourceException("If you encounter these message please contact the developer!"));
+
+            optionService.removeVote(currentUser, choosenOption);
             optionService.vote(currentUser, groupChat, poll, selectedOption);
-            wsService.broadcast(groupChat, STR."\{currentUser.getName()} voted for \{selectedOption.getOption()} in the poll. \{poll.getQuestion()}");
+            wsService.broadcast(groupChat, STR."\{currentUser.getName()} changed their vote to \{selectedOption.getOption()} in the poll. \{poll.getQuestion()}");
             return;
         }
 
-        Option choosenOption = optionService.getByUser(currentUser, groupChat, poll, selectedOption)
-                .orElseThrow(() -> new ResourceException("If you encounter these message please contact the developer!"));
-
-        optionService.removeVote(currentUser, choosenOption);
         optionService.vote(currentUser, groupChat, poll, selectedOption);
-        wsService.broadcast(groupChat, STR."\{currentUser.getName()} changed their vote to \{selectedOption.getOption()} in the poll. \{poll.getQuestion()}");
+        wsService.broadcast(groupChat, STR."\{currentUser.getName()} voted for \{selectedOption.getOption()} in the poll. \{poll.getQuestion()}");
     }
 
     @PostMapping
