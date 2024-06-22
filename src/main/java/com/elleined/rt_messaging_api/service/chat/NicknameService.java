@@ -5,4 +5,5 @@ import com.elleined.rt_messaging_api.model.user.User;
 
 public interface NicknameService<T extends Chat> {
     void setNickname(User currentUser, T chat, User nicknamedUser, String nickname);
+    void removeNickname(User currentUser, T chat, User nicknamedUser);
 }

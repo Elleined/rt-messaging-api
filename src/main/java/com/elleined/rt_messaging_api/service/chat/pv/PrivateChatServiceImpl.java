@@ -80,9 +80,22 @@ public class PrivateChatServiceImpl implements PrivateChatService {
         if (currentUser.notAllowed(chat))
             throw new ResourceNotOwnedException("Cannot set nickname! because you cannot :) you already know why right?");
 
-         chat.setNickname(nicknamedUser, nickname);
-         privateChatRepository.save(chat);
-         log.debug("User with id of {} has now nickname of {}", nicknamedUser.getId(), nickname);
+        chat.getNicknames().put(nicknamedUser, nickname);
+        privateChatRepository.save(chat);
+        log.debug("User with id of {} has now nickname of {}", nicknamedUser.getId(), nickname);
+    }
+
+    @Override
+    public void removeNickname(User currentUser, PrivateChat chat, User nicknamedUser) {
+        if (nicknamedUser.notAllowed(chat))
+            throw new ResourceNotOwnedException("Cannot set nickname! because you cannot :) you already know why right?");
+
+        if (currentUser.notAllowed(chat))
+            throw new ResourceNotOwnedException("Cannot set nickname! because you cannot :) you already know why right?");
+
+        chat.getNicknames().remove(nicknamedUser);
+        privateChatRepository.save(chat);
+        log.debug("User with id of {} nickname has been removed", nicknamedUser.getId());
     }
 
     @Override

@@ -50,23 +50,4 @@ public class PrivateChatController {
 
         privateChatService.delete(currentUser, privateChat);
     }
-
-    @PostMapping("/{privateChatId}/nicknames/{nicknamedUserId}")
-    public String setNickname(@PathVariable("currentUserId") int currentUserId,
-                              @PathVariable("privateChatId") int privateChatId,
-                              @PathVariable("nicknamedUserId") int nicknamedUserId,
-                              @RequestParam("nickname") String nickname) {
-
-        User currentUser = userService.getById(currentUserId);
-        User nicknamedUser = userService.getById(nicknamedUserId);
-        PrivateChat privateChat = privateChatService.getById(privateChatId);
-
-        privateChatService.setNickname(currentUser, privateChat, nicknamedUser, nickname);
-
-        String announcement = currentUser == nicknamedUser
-                ? STR."\{currentUser.getName()} set his own nickname to: \{nickname}"
-                : STR."\{currentUser.getName()} set \{nicknamedUser.getName()} nickname to: \{nickname}";
-        wsService.broadcast(privateChat, announcement);
-        return nickname;
-    }
 }

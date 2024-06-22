@@ -84,10 +84,6 @@ public abstract class Chat extends PrimaryKeyIdentity {
                 .anyMatch(message::equals);
     }
 
-    public void setNickname(User user, String nickname) {
-        this.getNicknames().put(user, nickname);
-    }
-
     public String getNickname(User user) {
         return this.getNicknames().get(user);
     }

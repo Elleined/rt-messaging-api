@@ -5,6 +5,7 @@ import com.elleined.rt_messaging_api.exception.resource.ResourceNotFoundExceptio
 import com.elleined.rt_messaging_api.exception.resource.ResourceNotOwnedException;
 import com.elleined.rt_messaging_api.mapper.chat.GroupChatMapper;
 import com.elleined.rt_messaging_api.model.chat.GroupChat;
+import com.elleined.rt_messaging_api.model.chat.PrivateChat;
 import com.elleined.rt_messaging_api.model.user.User;
 import com.elleined.rt_messaging_api.repository.chat.GroupChatRepository;
 import com.elleined.rt_messaging_api.repository.user.UserRepository;
@@ -126,9 +127,22 @@ public class GroupChatServiceImpl implements GroupChatService {
         if (currentUser.notAllowed(chat))
             throw new ResourceNotOwnedException("Cannot set nickname! because you cannot :) you already know why right?");
 
-        chat.setNickname(nicknamedUser, nickname);
+        chat.getNicknames().put(nicknamedUser, nickname);
         groupChatRepository.save(chat);
         log.debug("User with id of {} has now nickname of {}", nicknamedUser.getId(), nickname);
+    }
+
+    @Override
+    public void removeNickname(User currentUser, GroupChat chat, User nicknamedUser) {
+        if (nicknamedUser.notAllowed(chat))
+            throw new ResourceNotOwnedException("Cannot set nickname! because you cannot :) you already know why right?");
+
+        if (currentUser.notAllowed(chat))
+            throw new ResourceNotOwnedException("Cannot set nickname! because you cannot :) you already know why right?");
+
+        chat.getNicknames().remove(nicknamedUser);
+        groupChatRepository.save(chat);
+        log.debug("User with id of {} nickname has been removed", nicknamedUser.getId());
     }
 
     @Override

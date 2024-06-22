@@ -57,7 +57,6 @@ public class GroupChatController {
         groupChatService.changeName(currentUser, groupChat, name);
 
         wsService.broadcast(groupChat, STR."\{currentUser.getName()} changed the group name to: \{name}");
-
         return name;
     }
 
@@ -72,7 +71,6 @@ public class GroupChatController {
         groupChatService.changePicture(currentUser, groupChat, picture);
 
         wsService.broadcast(groupChat, STR."\{currentUser.getName()} changed the group photo.");
-
         return picture;
     }
 
@@ -146,24 +144,5 @@ public class GroupChatController {
         return groupChatService.getAll(currentUser, pageable).stream()
                 .map(groupChatMapper::toDTO)
                 .toList();
-    }
-
-    @PostMapping("/{groupChatId}/nicknames/{nicknamedUserId}")
-    public String setNickname(@PathVariable("currentUserId") int currentUserId,
-                              @PathVariable("groupChatId") int groupChatId,
-                              @PathVariable("nicknamedUserId") int nicknamedUserId,
-                              @RequestParam("nickname") String nickname) {
-
-        User currentUser = userService.getById(currentUserId);
-        User nicknamedUser = userService.getById(nicknamedUserId);
-        GroupChat groupChat = groupChatService.getById(groupChatId);
-
-        groupChatService.setNickname(currentUser, groupChat, nicknamedUser, nickname);
-
-        String announcement = currentUser == nicknamedUser
-                ? STR."\{currentUser.getName()} set his own nickname to: \{nickname}"
-                : STR."\{currentUser.getName()} set \{nicknamedUser.getName()} nickname to: \{nickname}";
-        wsService.broadcast(groupChat, announcement);
-        return nickname;
     }
 }
