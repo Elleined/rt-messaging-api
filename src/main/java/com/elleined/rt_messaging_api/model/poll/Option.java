@@ -50,12 +50,12 @@ public class Option extends PrimaryKeyIdentity {
     @JoinTable(
             name = "tbl_option_vote",
             joinColumns = @JoinColumn(
-                    name = "user_id",
+                    name = "option_id",
                     referencedColumnName = "id",
                     nullable = false
             ),
             inverseJoinColumns = @JoinColumn(
-                    name = "option_id",
+                    name = "voting_user_id",
                     referencedColumnName = "id",
                     nullable = false
             )

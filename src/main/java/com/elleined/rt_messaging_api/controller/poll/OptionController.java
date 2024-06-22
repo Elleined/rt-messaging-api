@@ -1,7 +1,7 @@
 package com.elleined.rt_messaging_api.controller.poll;
 
 import com.elleined.rt_messaging_api.dto.poll.OptionDTO;
-import com.elleined.rt_messaging_api.exception.resource.ResourceNotFoundException;
+import com.elleined.rt_messaging_api.exception.resource.ResourceException;
 import com.elleined.rt_messaging_api.mapper.poll.OptionMapper;
 import com.elleined.rt_messaging_api.model.chat.GroupChat;
 import com.elleined.rt_messaging_api.model.poll.Option;
@@ -62,22 +62,20 @@ public class OptionController {
         User currentUser = userService.getById(currentUserId);
         GroupChat groupChat = groupChatService.getById(groupChatId);
         Poll poll = pollService.getById(pollId);
-        Option option = optionService.getById(optionId);
+        Option selectedOption = optionService.getById(optionId);
 
-        if (optionService.isAlreadyVoted(option, currentUser))
+        if (optionService.hasNotBeenVoted(currentUser, groupChat, poll)) {
+            optionService.vote(currentUser, groupChat, poll, selectedOption);
+            wsService.broadcast(groupChat, STR."\{currentUser.getName()} voted for \{selectedOption.getOption()} in the poll. \{poll.getQuestion()}");
             return;
+        }
 
-        Option choosenOption = optionService.getByUser(currentUser, groupChat, poll, option).orElseThrow();
+        Option choosenOption = optionService.getByUser(currentUser, groupChat, poll, selectedOption)
+                .orElseThrow(() -> new ResourceException("If you encounter these message please contact the developer!"));
 
-
-        // isang beses lang pede vumpte sa kahit anong option
-        // if nakavote na tapos hindi same meaning inupdate nya and then iremove yung vote nya sa datinf option
-        // else hindi pasya nakakavote isave yan
-
-
-        // wsService.broadcast(groupChat, STR."\{currentUser.getName()} changed their vote to \{option.getOption()} in the poll. \{poll.getQuestion()}");
-        optionService.vote(currentUser, groupChat, poll, option);
-        wsService.broadcast(groupChat, STR."\{currentUser.getName()} voted for \{option.getOption()} in the poll. \{poll.getQuestion()}");
+        optionService.removeVote(currentUser, choosenOption);
+        optionService.vote(currentUser, groupChat, poll, selectedOption);
+        wsService.broadcast(groupChat, STR."\{currentUser.getName()} changed their vote to \{selectedOption.getOption()} in the poll. \{poll.getQuestion()}");
     }
 
     @PostMapping

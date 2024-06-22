@@ -1,5 +1,6 @@
 package com.elleined.rt_messaging_api.service.poll.option;
 
+import com.elleined.rt_messaging_api.exception.resource.ResourceAlreadyExistsException;
 import com.elleined.rt_messaging_api.exception.resource.ResourceNotFoundException;
 import com.elleined.rt_messaging_api.exception.resource.ResourceNotOwnedException;
 import com.elleined.rt_messaging_api.mapper.poll.OptionMapper;
@@ -58,6 +59,9 @@ public class OptionServiceImpl implements OptionService {
 
     @Override
     public void vote(User currentUser, GroupChat groupChat, Poll poll, Option option) {
+        if (this.isAlreadyVoted(option, currentUser))
+            throw new ResourceAlreadyExistsException("Cannot vote to this option! because you already voted this. Choose other options :)");
+
         if (currentUser.notAllowed(groupChat))
             throw new ResourceNotOwnedException("Cannot vote to this option! because you cannot :) you already know why right?");
 
@@ -69,7 +73,14 @@ public class OptionServiceImpl implements OptionService {
 
         option.getVotingUsers().add(currentUser);
         optionRepository.save(option);
-        log.debug("Current user with id of {} voted poll with id of {}", currentUser.getId(), poll.getId());
+        log.debug("Current user with id of {} voted poll with id of {} in its option with id of {}", currentUser.getId(), poll.getId(), option.getId());
+    }
+
+    @Override
+    public void removeVote(User currentUser, Option option) {
+        option.getVotingUsers().remove(currentUser);
+        optionRepository.save(option);
+        log.debug("Removing the old vote success");
     }
 
     @Override
@@ -83,7 +94,9 @@ public class OptionServiceImpl implements OptionService {
         if (poll.notOwned(option))
             throw new ResourceNotOwnedException("Cannot get by user! because poll doesn't have this option!");
 
-
+        return poll.getOptions().stream()
+                .filter(pollOptions -> pollOptions.getVotingUsers().contains(currentUser))
+                .findFirst();
     }
 
     @Override
