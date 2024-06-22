@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -33,7 +32,7 @@ public class Option extends PrimaryKeyIdentity {
     private User creator;
 
     @Column(
-            name = "option",
+            name = "option_alt",
             nullable = false
     )
     private String option;
@@ -47,7 +46,20 @@ public class Option extends PrimaryKeyIdentity {
     )
     private Poll poll;
 
-    @ManyToMany(mappedBy = "votedOptions")
+    @ManyToMany
+    @JoinTable(
+            name = "tbl_option_vote",
+            joinColumns = @JoinColumn(
+                    name = "user_id",
+                    referencedColumnName = "id",
+                    nullable = false
+            ),
+            inverseJoinColumns = @JoinColumn(
+                    name = "option_id",
+                    referencedColumnName = "id",
+                    nullable = false
+            )
+    )
     private Set<User> votingUsers;
 
     public Set<Integer> votingUserIds() {
@@ -56,7 +68,4 @@ public class Option extends PrimaryKeyIdentity {
                 .collect(Collectors.toSet());
     }
 
-    public boolean isAlreadyVoted(User user) {
-        return this.getVotingUsers().contains(user);
-    }
 }

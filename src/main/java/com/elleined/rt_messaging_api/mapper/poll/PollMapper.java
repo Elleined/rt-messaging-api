@@ -32,6 +32,6 @@ public interface PollMapper extends CustomMapper<Poll, PollDTO> {
             @Mapping(target = "options", expression = "java(new java.util.ArrayList<>())"),
     })
     Poll toEntity(User creator,
-                  String question,
-                  GroupChat groupChat);
+                  GroupChat groupChat,
+                  String question);
 }

@@ -21,7 +21,8 @@ public interface GroupChatMapper extends CustomMapper<GroupChat, GroupChatDTO> {
             @Mapping(target = "messageIds", expression = "java(groupChat.messageIds())"),
             @Mapping(target = "pinMessageIds", expression = "java(groupChat.pinMessageIds())"),
             @Mapping(target = "nicknames", expression = "java(groupChat.getNicknameDTOs())"),
-            @Mapping(target = "receiverIds", expression = "java(groupChat.receiverIds())")
+            @Mapping(target = "receiverIds", expression = "java(groupChat.receiverIds())"),
+            @Mapping(target = "pollIds", expression = "java(groupChat.pollIds())")
     })
     GroupChatDTO toDTO(GroupChat groupChat);
 
@@ -35,6 +36,7 @@ public interface GroupChatMapper extends CustomMapper<GroupChat, GroupChatDTO> {
             @Mapping(target = "name", source = "name"),
             @Mapping(target = "picture", source = "picture"),
             @Mapping(target = "receivers", source = "receivers"),
+            @Mapping(target = "polls", expression = "java(new java.util.ArrayList<>())")
     })
     GroupChat toEntity(User creator,
                        String name,

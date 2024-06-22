@@ -56,28 +56,6 @@ public class User extends PrimaryKeyIdentity {
     @OneToMany(mappedBy = "mentionedUser")
     private List<Mention> receivedMentions;
 
-    @OneToMany(mappedBy = "creator")
-    private List<Poll> createdPolls;
-
-    @OneToMany(mappedBy = "creator")
-    private List<Option> createdOptions;
-
-    @ManyToMany
-    @JoinTable(
-            name = "tbl_option_vote",
-            joinColumns = @JoinColumn(
-                    name = "user_id",
-                    referencedColumnName = "id",
-                    nullable = false
-            ),
-            inverseJoinColumns = @JoinColumn(
-                    name = "option_id",
-                    referencedColumnName = "id",
-                    nullable = false
-            )
-    )
-    private Set<Option> votedOptions;
-
     public List<Integer> privateChatIds() {
         return this.getReceivedPrivateChats().stream()
                 .map(PrimaryKeyIdentity::getId)
@@ -97,14 +75,6 @@ public class User extends PrimaryKeyIdentity {
     public boolean notOwned(Message message) {
         return !this.getMessages().contains(message);
     }
-    public boolean notOwned(Poll poll) {
-        return !this.getCreatedPolls().contains(poll);
-    }
-
-    public boolean notOwned(Option option) {
-        return !this.getCreatedOptions().contains(option);
-    }
-
 
     public boolean notAllowed(PrivateChat privateChat) {
         return !privateChat.getCreator().equals(this) &&
