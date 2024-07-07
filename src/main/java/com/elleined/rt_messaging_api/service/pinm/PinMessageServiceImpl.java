@@ -12,11 +12,11 @@ import com.elleined.rt_messaging_api.model.user.User;
 import com.elleined.rt_messaging_api.repository.message.PinMessageRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
 import java.util.List;
 
 @Slf4j
@@ -28,19 +28,19 @@ public class PinMessageServiceImpl implements PinMessageService {
     private final PinMessageMapper pinMessageMapper;
 
     @Override
-    public Collection<PinMessage> getAll(User currentUser, PrivateChat chat, Pageable pageable) {
+    public Page<PinMessage> getAll(User currentUser, PrivateChat chat, Pageable pageable) {
         if (currentUser.notAllowed(chat))
             throw new ResourceNotOwnedException("Cannot get all pin messages! because you cannot :) you already know why right?");
 
-        return pinMessageRepository.findAllPinnedMessages(chat, pageable).getContent();
+        return pinMessageRepository.findAllPinnedMessages(chat, pageable);
     }
 
     @Override
-    public Collection<PinMessage> getAll(User currentUser, GroupChat chat, Pageable pageable) {
+    public Page<PinMessage> getAll(User currentUser, GroupChat chat, Pageable pageable) {
         if (currentUser.notAllowed(chat))
             throw new ResourceNotOwnedException("Cannot get all pin messages! because you cannot :) you already know why right?");
 
-        return pinMessageRepository.findAllPinnedMessages(chat, pageable).getContent();
+        return pinMessageRepository.findAllPinnedMessages(chat, pageable);
     }
 
     @Override

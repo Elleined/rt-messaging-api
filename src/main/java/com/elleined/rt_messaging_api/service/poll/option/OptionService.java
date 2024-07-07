@@ -5,6 +5,7 @@ import com.elleined.rt_messaging_api.model.poll.Option;
 import com.elleined.rt_messaging_api.model.poll.Poll;
 import com.elleined.rt_messaging_api.model.user.User;
 import com.elleined.rt_messaging_api.service.CustomService;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Collection;
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface OptionService extends CustomService<Option> {
-    List<Option> getAll(User currentUser,
+    Page<Option> getAll(User currentUser,
                         GroupChat groupChat,
                         Poll poll,
                         Pageable pageable);
@@ -32,10 +33,6 @@ public interface OptionService extends CustomService<Option> {
     Optional<Option> getByUser(User currentUser,
                                GroupChat groupChat,
                                Poll poll);
-
-    default boolean isAlreadyVoted(Option option, User user) {
-        return option.getVotingUsers().contains(user);
-    }
 
     default boolean isAlreadyVoted(User currentUser, GroupChat groupChat, Poll poll) {
         return poll.getOptions().stream()

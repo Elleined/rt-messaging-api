@@ -6,6 +6,7 @@ import com.elleined.rt_messaging_api.model.message.Message;
 import com.elleined.rt_messaging_api.model.reaction.Reaction;
 import com.elleined.rt_messaging_api.model.user.User;
 import com.elleined.rt_messaging_api.service.CustomService;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -21,8 +22,8 @@ public interface ReactionService extends CustomService<Reaction> {
                   Reaction.Emoji emoji,
                   Message message);
 
-    List<Reaction> getAll(User currentUser, PrivateChat privateChat, Message message, Pageable pageable);
-    List<Reaction> getAll(User currentUser, GroupChat groupChat, Message message, Pageable pageable);
+    Page<Reaction> getAll(User currentUser, PrivateChat privateChat, Message message, Pageable pageable);
+    Page<Reaction> getAll(User currentUser, GroupChat groupChat, Message message, Pageable pageable);
 
     void update(User currentUser, PrivateChat privateChat, Message message, Reaction reaction, Reaction.Emoji emoji);
     void update(User currentUser, GroupChat groupChat, Message message, Reaction reaction, Reaction.Emoji emoji);
@@ -36,15 +37,6 @@ public interface ReactionService extends CustomService<Reaction> {
     Reaction getByUser(User currentUser, PrivateChat privateChat, Message message);
     Reaction getByUser(User currentUser, GroupChat groupChat, Message message);
 
-    default List<Reaction> getAllByEmoji(User currentUser, PrivateChat privateChat, Message message, Reaction.Emoji emoji, Pageable pageable) {
-        return this.getAll(currentUser, privateChat, message, pageable).stream()
-                .filter(reaction -> reaction.getEmoji().equals(emoji))
-                .toList();
-    }
-
-    default List<Reaction> getAllByEmoji(User currentUser, GroupChat groupChat, Message message, Reaction.Emoji emoji, Pageable pageable) {
-        return this.getAll(currentUser, groupChat, message, pageable).stream()
-                .filter(reaction -> reaction.getEmoji().equals(emoji))
-                .toList();
-    }
+    Page<Reaction> getAllByEmoji(User currentUser, PrivateChat privateChat, Message message, Reaction.Emoji emoji, Pageable pageable);
+    Page<Reaction> getAllByEmoji(User currentUser, GroupChat groupChat, Message message, Reaction.Emoji emoji, Pageable pageable);
 }

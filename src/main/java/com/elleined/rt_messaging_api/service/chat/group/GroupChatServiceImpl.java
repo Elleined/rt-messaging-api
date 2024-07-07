@@ -5,12 +5,12 @@ import com.elleined.rt_messaging_api.exception.resource.ResourceNotFoundExceptio
 import com.elleined.rt_messaging_api.exception.resource.ResourceNotOwnedException;
 import com.elleined.rt_messaging_api.mapper.chat.GroupChatMapper;
 import com.elleined.rt_messaging_api.model.chat.GroupChat;
-import com.elleined.rt_messaging_api.model.chat.PrivateChat;
 import com.elleined.rt_messaging_api.model.user.User;
 import com.elleined.rt_messaging_api.repository.chat.GroupChatRepository;
 import com.elleined.rt_messaging_api.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,11 +59,11 @@ public class GroupChatServiceImpl implements GroupChatService {
     }
 
     @Override
-    public List<User> getAllReceivers(User currentUser, GroupChat groupChat, Pageable pageable) {
+    public Page<User> getAllReceivers(User currentUser, GroupChat groupChat, Pageable pageable) {
         if (currentUser.notAllowed(groupChat))
             throw new ResourceNotOwnedException("Cannot get all receiver! because you cannot :) you already know why right?");
 
-        return groupChatRepository.findAllReceivers(groupChat, pageable).getContent();
+        return groupChatRepository.findAllReceivers(groupChat, pageable);
     }
 
     @Override

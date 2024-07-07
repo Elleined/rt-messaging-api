@@ -10,6 +10,8 @@ import org.springframework.data.repository.query.Param;
 
 public interface MessageRepository extends JpaRepository<Message, Integer> {
 
-    @Query("SELECT m FROM Message m WHERE m.chat = :chat")
-    Page<Message> findAll(@Param("chat") Chat chat, Pageable pageable);
+    @Query("SELECT m FROM Message m WHERE m.chat = :chat AND m.status = :status")
+    Page<Message> findAll(@Param("chat") Chat chat,
+                          @Param("status") Message.Status status,
+                          Pageable pageable);
 }

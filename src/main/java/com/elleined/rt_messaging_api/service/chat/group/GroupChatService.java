@@ -3,6 +3,7 @@ package com.elleined.rt_messaging_api.service.chat.group;
 import com.elleined.rt_messaging_api.model.chat.GroupChat;
 import com.elleined.rt_messaging_api.model.user.User;
 import com.elleined.rt_messaging_api.service.chat.ChatService;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public interface GroupChatService extends ChatService<GroupChat> {
     void changeName(User currentUser, GroupChat groupChat, String name);
     void changePicture(User currentUser, GroupChat groupChat, String picture);
 
-    List<User> getAllReceivers(User currentUser, GroupChat groupChat, Pageable pageable);
+    Page<User> getAllReceivers(User currentUser, GroupChat groupChat, Pageable pageable);
     void leaveGroup(User currentUser, GroupChat groupChat);
 
     void addReceiver(User currentUser, GroupChat groupChat, User receiver);
