@@ -75,18 +75,6 @@ public class Message extends PrimaryKeyIdentity {
         VOICE_MESSAGE
     }
 
-    public List<Integer> reactionIds() {
-        return this.getReactions().stream()
-                .map(PrimaryKeyIdentity::getId)
-                .toList();
-    }
-
-    public List<Integer> mentionIds() {
-        return this.getMentions().stream()
-                .map(PrimaryKeyIdentity::getId)
-                .toList();
-    }
-
     public boolean notOwned(Reaction reaction) {
         return !this.getReactions().contains(reaction);
     }

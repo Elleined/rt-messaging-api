@@ -13,6 +13,7 @@ import com.elleined.rt_messaging_api.repository.message.MessageRepository;
 import com.elleined.rt_messaging_api.repository.reaction.ReactionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,7 +61,7 @@ public class ReactionServiceImpl implements ReactionService {
     }
 
     @Override
-    public List<Reaction> getAll(User currentUser, PrivateChat privateChat, Message message, Pageable pageable) {
+    public Page<Reaction> getAll(User currentUser, PrivateChat privateChat, Message message, Pageable pageable) {
         if (currentUser.notAllowed(privateChat))
             throw new ResourceNotOwnedException("Cannot get all reaction! because you cannot :) you already know why right?");
 
@@ -70,11 +71,11 @@ public class ReactionServiceImpl implements ReactionService {
         if (privateChat.notOwned(message))
             throw new ResourceNotOwnedException("Cannot get all reaction! because chat doesn't have this message!");
 
-        return reactionRepository.findAll(message, pageable).getContent();
+        return reactionRepository.findAll(message, pageable);
     }
 
     @Override
-    public List<Reaction> getAll(User currentUser, GroupChat groupChat, Message message, Pageable pageable) {
+    public Page<Reaction> getAll(User currentUser, GroupChat groupChat, Message message, Pageable pageable) {
         if (currentUser.notAllowed(groupChat))
             throw new ResourceNotOwnedException("Cannot get all reaction! because you cannot :) you already know why right?");
 
@@ -84,7 +85,7 @@ public class ReactionServiceImpl implements ReactionService {
         if (groupChat.notOwned(message))
             throw new ResourceNotOwnedException("Cannot get all reaction! because chat doesn't have this message!");
 
-        return reactionRepository.findAll(message, pageable).getContent();
+        return reactionRepository.findAll(message, pageable);
     }
 
     @Override
@@ -234,6 +235,16 @@ public class ReactionServiceImpl implements ReactionService {
                 .filter(reaction -> reaction.getCreator().equals(currentUser))
                 .findFirst()
                 .orElseThrow(() -> new ResourceNotFoundException("Getting reaction by user failed! "));
+    }
+
+    @Override
+    public Page<Reaction> getAllByEmoji(User currentUser, PrivateChat privateChat, Message message, Reaction.Emoji emoji, Pageable pageable) {
+        return reactionRepository.findAllByEmoji(privateChat, message, emoji, pageable);
+    }
+
+    @Override
+    public Page<Reaction> getAllByEmoji(User currentUser, GroupChat groupChat, Message message, Reaction.Emoji emoji, Pageable pageable) {
+        return reactionRepository.findAllByEmoji(groupChat, message, emoji, pageable);
     }
 
     @Override

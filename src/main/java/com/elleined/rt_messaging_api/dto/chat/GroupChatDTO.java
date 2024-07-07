@@ -1,20 +1,29 @@
 package com.elleined.rt_messaging_api.dto.chat;
 
+import com.elleined.rt_messaging_api.dto.user.UserDTO;
+import com.elleined.rt_messaging_api.model.user.User;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 
-import java.util.List;
-import java.util.Set;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@SuperBuilder
-@NoArgsConstructor
 public class GroupChatDTO extends ChatDTO {
     private String name;
     private String picture;
-    private List<Integer> pollIds;
-    private Set<Integer> receiverIds;
+
+    @Builder
+    public GroupChatDTO(int id, LocalDateTime createdAt, UserDTO creatorDTO, String name, String picture) {
+        super(id, createdAt, creatorDTO);
+        this.name = name;
+        this.picture = picture;
+    }
+
+    @Override
+    public GroupChatDTO addLinks(User currentUser, boolean doInclude) {
+        super.addLinks(currentUser, doInclude);
+        return this;
+    }
 }

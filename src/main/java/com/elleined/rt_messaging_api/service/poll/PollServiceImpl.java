@@ -9,6 +9,7 @@ import com.elleined.rt_messaging_api.model.user.User;
 import com.elleined.rt_messaging_api.repository.poll.PollRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,11 +25,11 @@ public class PollServiceImpl implements PollService {
     private final PollMapper pollMapper;
 
     @Override
-    public List<Poll> getAll(User currentUser, GroupChat groupChat, Pageable pageable) {
+    public Page<Poll> getAll(User currentUser, GroupChat groupChat, Pageable pageable) {
         if (currentUser.notAllowed(groupChat))
             throw new ResourceNotOwnedException("Cannot get all poll! because you cannot :) you already know why right?");
 
-        return pollRepository.findAll(groupChat, pageable).getContent();
+        return pollRepository.findAll(groupChat, pageable);
     }
 
     @Override

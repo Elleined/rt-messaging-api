@@ -14,5 +14,5 @@ public interface PrivateChatService extends ChatService<PrivateChat> {
                             User receiver);
 
     PrivateChat getByCreatorAndReceiver(User creator,
-                                                  User receiver);
+                                        User receiver);
 }

@@ -2,6 +2,7 @@ package com.elleined.rt_messaging_api.mapper.chat;
 
 import com.elleined.rt_messaging_api.dto.chat.GroupChatDTO;
 import com.elleined.rt_messaging_api.mapper.CustomMapper;
+import com.elleined.rt_messaging_api.mapper.user.UserMapper;
 import com.elleined.rt_messaging_api.model.chat.GroupChat;
 import com.elleined.rt_messaging_api.model.user.User;
 import org.mapstruct.Mapper;
@@ -10,19 +11,19 @@ import org.mapstruct.Mappings;
 
 import java.util.Set;
 
-@Mapper(componentModel = "spring")
+@Mapper(
+        componentModel = "spring",
+        uses = UserMapper.class
+)
 public interface GroupChatMapper extends CustomMapper<GroupChat, GroupChatDTO> {
 
     @Override
     @Mappings({
             @Mapping(target = "id", source = "id"),
             @Mapping(target = "createdAt", source = "createdAt"),
-            @Mapping(target = "creatorId", source = "creator.id"),
-            @Mapping(target = "messageIds", expression = "java(groupChat.messageIds())"),
-            @Mapping(target = "pinMessageIds", expression = "java(groupChat.pinMessageIds())"),
-            @Mapping(target = "nicknames", expression = "java(groupChat.getNicknameDTOs())"),
-            @Mapping(target = "receiverIds", expression = "java(groupChat.receiverIds())"),
-            @Mapping(target = "pollIds", expression = "java(groupChat.pollIds())")
+            @Mapping(target = "creatorDTO", source = "creator"),
+            @Mapping(target = "name", source = "name"),
+            @Mapping(target = "picture", source = "picture"),
     })
     GroupChatDTO toDTO(GroupChat groupChat);
 

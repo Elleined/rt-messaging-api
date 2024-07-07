@@ -5,8 +5,6 @@ import com.elleined.rt_messaging_api.model.chat.GroupChat;
 import com.elleined.rt_messaging_api.model.chat.PrivateChat;
 import com.elleined.rt_messaging_api.model.mention.Mention;
 import com.elleined.rt_messaging_api.model.message.Message;
-import com.elleined.rt_messaging_api.model.poll.Option;
-import com.elleined.rt_messaging_api.model.poll.Poll;
 import com.elleined.rt_messaging_api.model.reaction.Reaction;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -16,7 +14,6 @@ import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Entity
 @Table(
@@ -55,18 +52,6 @@ public class User extends PrimaryKeyIdentity {
 
     @OneToMany(mappedBy = "mentionedUser")
     private List<Mention> receivedMentions;
-
-    public List<Integer> privateChatIds() {
-        return this.getReceivedPrivateChats().stream()
-                .map(PrimaryKeyIdentity::getId)
-                .toList();
-    }
-
-    public Set<Integer> groupChatIds() {
-        return this.getReceivedGroupChats().stream()
-                .map(PrimaryKeyIdentity::getId)
-                .collect(Collectors.toSet());
-    }
 
     public boolean notOwned(Reaction reaction) {
         return !this.getReactions().contains(reaction);

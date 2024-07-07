@@ -2,6 +2,8 @@ package com.elleined.rt_messaging_api.mapper.mention;
 
 import com.elleined.rt_messaging_api.dto.mention.MentionDTO;
 import com.elleined.rt_messaging_api.mapper.CustomMapper;
+import com.elleined.rt_messaging_api.mapper.message.MessageMapper;
+import com.elleined.rt_messaging_api.mapper.user.UserMapper;
 import com.elleined.rt_messaging_api.model.mention.Mention;
 import com.elleined.rt_messaging_api.model.message.Message;
 import com.elleined.rt_messaging_api.model.user.User;
@@ -9,16 +11,22 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 
-@Mapper(componentModel = "spring")
+@Mapper(
+        componentModel = "spring",
+        uses = {
+                UserMapper.class,
+                MessageMapper.class
+        }
+)
 public interface MentionMapper extends CustomMapper<Mention, MentionDTO> {
 
     @Override
     @Mappings({
             @Mapping(target = "id", source = "id"),
             @Mapping(target = "createdAt", source = "createdAt"),
-            @Mapping(target = "creatorId", source = "creator.id"),
-            @Mapping(target = "mentionedUserId", source = "mentionedUser.id"),
-            @Mapping(target = "messageId", source = "message.id"),
+            @Mapping(target = "creatorDTO", source = "creator"),
+            @Mapping(target = "mentionedUserDTO", source = "mentionedUser"),
+            @Mapping(target = "messageDTO", source = "message"),
     })
     MentionDTO toDTO(Mention mention);
 

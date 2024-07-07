@@ -10,6 +10,7 @@ import com.elleined.rt_messaging_api.service.chat.group.GroupChatService;
 import com.elleined.rt_messaging_api.service.user.UserService;
 import com.elleined.rt_messaging_api.ws.WSService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -36,14 +37,15 @@ public class GroupChatController {
     public GroupChatDTO save(@PathVariable("currentUserId") int currentUserId,
                              @RequestParam("name") String name,
                              @RequestParam("picture") String picture,
-                             @RequestParam("receiverUserIds") Set<Integer> receiverUserIds) {
+                             @RequestParam("receiverUserIds") Set<Integer> receiverUserIds,
+                             @RequestParam(defaultValue = "false", name = "includeRelatedLinks") boolean includeRelatedLinks) {
 
         User currentUser = userService.getById(currentUserId);
         List<User> receiverUsers = userService.getAllById(new ArrayList<>(receiverUserIds));
 
         GroupChat groupChat = groupChatService.save(currentUser, name, picture, new HashSet<>(receiverUsers));
 
-        return groupChatMapper.toDTO(groupChat);
+        return groupChatMapper.toDTO(groupChat).addLinks(currentUser, includeRelatedLinks);
     }
 
     @PatchMapping("/{groupChatId}/name")
@@ -75,20 +77,21 @@ public class GroupChatController {
     }
 
     @GetMapping("/{groupChatId}/receivers")
-    public List<UserDTO> getAllReceivers(@PathVariable("currentUserId") int currentUserId,
+    public Page<UserDTO> getAllReceivers(@PathVariable("currentUserId") int currentUserId,
                                          @PathVariable("groupChatId") int groupChatId,
                                          @RequestParam(required = false, defaultValue = "1", value = "pageNumber") int pageNumber,
                                          @RequestParam(required = false, defaultValue = "5", value = "pageSize") int pageSize,
                                          @RequestParam(required = false, defaultValue = "ASC", value = "sortDirection") Sort.Direction direction,
-                                         @RequestParam(required = false, defaultValue = "id", value = "sortBy") String sortBy) {
+                                         @RequestParam(required = false, defaultValue = "id", value = "sortBy") String sortBy,
+                                         @RequestParam(defaultValue = "false", name = "includeRelatedLinks") boolean includeRelatedLinks) {
 
         User currentUser = userService.getById(currentUserId);
         GroupChat groupChat = groupChatService.getById(groupChatId);
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, direction, sortBy);
 
-        return groupChatService.getAllReceivers(currentUser, groupChat, pageable).stream()
+        return groupChatService.getAllReceivers(currentUser, groupChat, pageable)
                 .map(userMapper::toDTO)
-                .toList();
+                .map(dto -> dto.addLinks(currentUser, includeRelatedLinks));
     }
 
     @PostMapping("/{groupChatId}/leave")
@@ -132,17 +135,18 @@ public class GroupChatController {
     }
 
     @GetMapping
-    public List<GroupChatDTO> getAll(@PathVariable("currentUserId") int currentUserId,
+    public Page<GroupChatDTO> getAll(@PathVariable("currentUserId") int currentUserId,
                                      @RequestParam(required = false, defaultValue = "1", value = "pageNumber") int pageNumber,
                                      @RequestParam(required = false, defaultValue = "5", value = "pageSize") int pageSize,
                                      @RequestParam(required = false, defaultValue = "ASC", value = "sortDirection") Sort.Direction direction,
-                                     @RequestParam(required = false, defaultValue = "id", value = "sortBy") String sortBy) {
+                                     @RequestParam(required = false, defaultValue = "id", value = "sortBy") String sortBy,
+                                     @RequestParam(defaultValue = "false", name = "includeRelatedLinks") boolean includeRelatedLinks) {
 
         User currentUser = userService.getById(currentUserId);
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, direction, sortBy);
 
-        return groupChatService.getAll(currentUser, pageable).stream()
+        return groupChatService.getAll(currentUser, pageable)
                 .map(groupChatMapper::toDTO)
-                .toList();
+                .map(dto -> dto.addLinks(currentUser, includeRelatedLinks));
     }
 }

@@ -6,13 +6,12 @@ import com.elleined.rt_messaging_api.model.message.Message;
 import com.elleined.rt_messaging_api.model.message.PinMessage;
 import com.elleined.rt_messaging_api.model.user.User;
 import com.elleined.rt_messaging_api.service.CustomService;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.Collection;
-
 public interface PinMessageService extends CustomService<PinMessage> {
-    Collection<PinMessage> getAll(User currentUser, PrivateChat chat, Pageable pageable);
-    Collection<PinMessage> getAll(User currentUser, GroupChat chat, Pageable pageable);
+    Page<PinMessage> getAll(User currentUser, PrivateChat chat, Pageable pageable);
+    Page<PinMessage> getAll(User currentUser, GroupChat chat, Pageable pageable);
 
     PinMessage pin(User currentUser, PrivateChat chat, Message message);
     PinMessage pin(User currentUser, GroupChat chat, Message message);

@@ -9,6 +9,7 @@ import com.elleined.rt_messaging_api.repository.chat.PrivateChatRepository;
 import com.elleined.rt_messaging_api.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -68,8 +69,8 @@ public class PrivateChatServiceImpl implements PrivateChatService {
     }
 
     @Override
-    public List<PrivateChat> getAll(User currentUser, Pageable pageable) {
-        return userRepository.findAllPrivateChats(currentUser, pageable).getContent();
+    public Page<PrivateChat> getAll(User currentUser, Pageable pageable) {
+        return userRepository.findAllPrivateChats(currentUser, pageable);
     }
 
     @Override

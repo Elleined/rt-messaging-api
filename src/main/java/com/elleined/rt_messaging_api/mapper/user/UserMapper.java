@@ -15,9 +15,7 @@ public interface UserMapper extends CustomMapper<User, UserDTO> {
             @Mapping(target = "id", source = "id"),
             @Mapping(target = "createdAt", source = "createdAt"),
             @Mapping(target = "name", source = "name"),
-            @Mapping(target = "image", source = "image"),
-            @Mapping(target = "privateChatIds", expression = "java(user.privateChatIds())"),
-            @Mapping(target = "groupChatIds", expression = "java(user.groupChatIds())"),
+            @Mapping(target = "image", source = "image")
     })
     UserDTO toDTO(User user);
 

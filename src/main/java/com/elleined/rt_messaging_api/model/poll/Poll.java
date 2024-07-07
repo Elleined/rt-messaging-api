@@ -49,12 +49,6 @@ public class Poll extends PrimaryKeyIdentity {
     @OneToMany(mappedBy = "poll")
     private List<Option> options;
 
-    public List<Integer> optionIds() {
-        return this.getOptions().stream()
-                .map(PrimaryKeyIdentity::getId)
-                .toList();
-    }
-
     public boolean notOwned(Option option) {
         return !this.getOptions().contains(option);
     }

@@ -3,7 +3,6 @@ package com.elleined.rt_messaging_api.service.message;
 import com.elleined.rt_messaging_api.exception.resource.ResourceNotFoundException;
 import com.elleined.rt_messaging_api.exception.resource.ResourceNotOwnedException;
 import com.elleined.rt_messaging_api.mapper.message.MessageMapper;
-import com.elleined.rt_messaging_api.model.chat.Chat;
 import com.elleined.rt_messaging_api.model.chat.GroupChat;
 import com.elleined.rt_messaging_api.model.chat.PrivateChat;
 import com.elleined.rt_messaging_api.model.message.Message;
@@ -11,6 +10,7 @@ import com.elleined.rt_messaging_api.model.user.User;
 import com.elleined.rt_messaging_api.repository.message.MessageRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,23 +27,19 @@ public class MessageServiceImpl implements MessageService {
     private final MessageMapper messageMapper;
 
     @Override
-    public List<Message> getAllMessage(User currentUser, GroupChat groupChat, Pageable pageable) {
+    public Page<Message> getAllMessage(User currentUser, GroupChat groupChat, Pageable pageable) {
         if (currentUser.notAllowed(groupChat))
             throw new ResourceNotOwnedException("Cannot get all messages! because you cannot :) you already know why right?");
 
-        return messageRepository.findAll(groupChat, pageable).stream()
-                .filter(Message::isActive)
-                .toList();
+        return messageRepository.findAll(groupChat, Message.Status.ACTIVE, pageable);
     }
 
     @Override
-    public List<Message> getAllMessage(User currentUser, PrivateChat privateChat, Pageable pageable) {
+    public Page<Message> getAllMessage(User currentUser, PrivateChat privateChat, Pageable pageable) {
         if (currentUser.notAllowed(privateChat))
             throw new ResourceNotOwnedException("Cannot get all messages! because you cannot :) you already know why right?");
 
-        return messageRepository.findAll(privateChat, pageable).stream()
-                .filter(Message::isActive)
-                .toList();
+        return messageRepository.findAll(privateChat, Message.Status.ACTIVE, pageable);
     }
 
     @Override
@@ -102,11 +98,6 @@ public class MessageServiceImpl implements MessageService {
 
         messageRepository.save(message);
         log.debug("Message unsent successfully!");
-    }
-
-    @Override
-    public void removeForYou(User currentUser, Chat chat, Message message) {
-
     }
 
     @Override

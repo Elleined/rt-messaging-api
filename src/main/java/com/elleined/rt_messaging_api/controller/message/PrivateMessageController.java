@@ -10,13 +10,12 @@ import com.elleined.rt_messaging_api.service.message.MessageService;
 import com.elleined.rt_messaging_api.service.user.UserService;
 import com.elleined.rt_messaging_api.ws.WSService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.HtmlUtils;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/users/{currentUserId}")
@@ -32,20 +31,21 @@ public class PrivateMessageController {
     private final WSService wsService;
 
     @GetMapping("/private-chats/{privateChatId}/messages")
-    public List<MessageDTO> getAllMessage(@PathVariable("currentUserId") int currentUserId,
+    public Page<MessageDTO> getAllMessage(@PathVariable("currentUserId") int currentUserId,
                                           @PathVariable("privateChatId") int privateChatId,
                                           @RequestParam(required = false, defaultValue = "1", value = "pageNumber") int pageNumber,
                                           @RequestParam(required = false, defaultValue = "5", value = "pageSize") int pageSize,
                                           @RequestParam(required = false, defaultValue = "ASC", value = "sortDirection") Sort.Direction direction,
-                                          @RequestParam(required = false, defaultValue = "id", value = "sortBy") String sortBy) {
+                                          @RequestParam(required = false, defaultValue = "id", value = "sortBy") String sortBy,
+                                          @RequestParam(defaultValue = "false", name = "includeRelatedLinks") boolean includeRelatedLinks) {
 
         User currentUser = userService.getById(currentUserId);
         PrivateChat privateChat = privateChatService.getById(privateChatId);
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, direction, sortBy);
 
-        return messageService.getAllMessage(currentUser, privateChat, pageable).stream()
+        return messageService.getAllMessage(currentUser, privateChat, pageable)
                 .map(messageMapper::toDTO)
-                .toList();
+                .map(dto -> dto.addLinks(currentUser, includeRelatedLinks));
     }
 
     @DeleteMapping("/private-chats/{privateChatId}/messages/{messageId}/unsent")
@@ -68,7 +68,8 @@ public class PrivateMessageController {
     public MessageDTO save(@PathVariable("currentUserId") int currentUserId,
                            @PathVariable("receiverId") int receiverId,
                            @RequestParam("content") String content,
-                           @RequestParam("contentType") Message.ContentType contentType) {
+                           @RequestParam("contentType") Message.ContentType contentType,
+                           @RequestParam(defaultValue = "false", name = "includeRelatedLinks") boolean includeRelatedLinks) {
 
         User currentUser = userService.getById(currentUserId);
         User receiver = userService.getById(receiverId);
@@ -81,13 +82,13 @@ public class PrivateMessageController {
             Message message = messageService.save(currentUser, privateChat, sanitizedContent, contentType);
             MessageDTO messageDTO = messageMapper.toDTO(message);
             wsService.broadcast(privateChat, messageDTO);
-            return messageDTO;
+            return messageDTO.addLinks(currentUser, includeRelatedLinks);
         }
 
         PrivateChat privateChat = privateChatService.save(currentUser, receiver);
         Message message = messageService.save(currentUser, privateChat, sanitizedContent, contentType);
         MessageDTO messageDTO = messageMapper.toDTO(message);
         wsService.broadcast(privateChat, messageDTO);
-        return messageDTO;
+        return messageDTO.addLinks(currentUser, includeRelatedLinks);
     }
 }

@@ -1,6 +1,5 @@
 package com.elleined.rt_messaging_api.model.chat;
 
-import com.elleined.rt_messaging_api.model.PrimaryKeyIdentity;
 import com.elleined.rt_messaging_api.model.poll.Poll;
 import com.elleined.rt_messaging_api.model.user.User;
 import jakarta.persistence.*;
@@ -11,7 +10,6 @@ import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "tbl_group_chat")
@@ -45,18 +43,6 @@ public class GroupChat extends Chat {
             )
     )
     private Set<User> receivers;
-
-    public Set<Integer> receiverIds() {
-        return this.getReceivers().stream()
-                .map(PrimaryKeyIdentity::getId)
-                .collect(Collectors.toSet());
-    }
-
-    public List<Integer> pollIds() {
-        return this.getPolls().stream()
-                .map(PrimaryKeyIdentity::getId)
-                .toList();
-    }
 
     public boolean notOwned(Poll poll) {
         return !this.getPolls().contains(poll);

@@ -1,6 +1,5 @@
 package com.elleined.rt_messaging_api.service.poll.option;
 
-import com.elleined.rt_messaging_api.exception.resource.ResourceAlreadyExistsException;
 import com.elleined.rt_messaging_api.exception.resource.ResourceNotFoundException;
 import com.elleined.rt_messaging_api.exception.resource.ResourceNotOwnedException;
 import com.elleined.rt_messaging_api.mapper.poll.OptionMapper;
@@ -12,6 +11,7 @@ import com.elleined.rt_messaging_api.repository.poll.OptionRepository;
 import com.elleined.rt_messaging_api.repository.poll.PollRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,14 +30,14 @@ public class OptionServiceImpl implements OptionService {
     private final OptionMapper optionMapper;
 
     @Override
-    public List<Option> getAll(User currentUser, GroupChat groupChat, Poll poll, Pageable pageable) {
+    public Page<Option> getAll(User currentUser, GroupChat groupChat, Poll poll, Pageable pageable) {
         if (currentUser.notAllowed(groupChat))
             throw new ResourceNotOwnedException("Cannot get all option! because you cannot :) you already know why right?");
 
         if (groupChat.notOwned(poll))
             throw new ResourceNotOwnedException("Cannot get all option! because group chat doesn't have this poll!");
 
-        return optionRepository.findAllByPoll(poll, pageable).getContent();
+        return optionRepository.findAllByPoll(poll, pageable);
     }
 
     @Override

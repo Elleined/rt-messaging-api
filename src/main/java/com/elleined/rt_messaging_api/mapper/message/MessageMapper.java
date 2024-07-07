@@ -2,6 +2,7 @@ package com.elleined.rt_messaging_api.mapper.message;
 
 import com.elleined.rt_messaging_api.dto.message.MessageDTO;
 import com.elleined.rt_messaging_api.mapper.CustomMapper;
+import com.elleined.rt_messaging_api.mapper.user.UserMapper;
 import com.elleined.rt_messaging_api.model.chat.Chat;
 import com.elleined.rt_messaging_api.model.message.Message;
 import com.elleined.rt_messaging_api.model.user.User;
@@ -14,6 +15,9 @@ import org.mapstruct.Mappings;
         imports = {
                 Message.ContentType.class,
                 Message.Status.class
+        },
+        uses = {
+                UserMapper.class
         }
 )
 public interface MessageMapper extends CustomMapper<Message, MessageDTO> {
@@ -22,13 +26,11 @@ public interface MessageMapper extends CustomMapper<Message, MessageDTO> {
     @Mappings({
             @Mapping(target = "id", source = "id"),
             @Mapping(target = "createdAt", source = "createdAt"),
-            @Mapping(target = "creatorId", source = "creator.id"),
+            @Mapping(target = "creatorDTO", source = "creator"),
             @Mapping(target = "content", source = "content"),
             @Mapping(target = "contentType", source = "contentType"),
             @Mapping(target = "status", source = "status"),
-            @Mapping(target = "chatId", source = "chat.id"),
-            @Mapping(target = "reactionIds", expression = "java(message.reactionIds())"),
-            @Mapping(target = "mentionIds", expression = "java(message.mentionIds())"),
+            @Mapping(target = "chatDTO", source = "chat"),
     })
     MessageDTO toDTO(Message message);
 

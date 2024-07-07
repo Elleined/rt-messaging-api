@@ -13,12 +13,11 @@ import com.elleined.rt_messaging_api.service.poll.option.OptionService;
 import com.elleined.rt_messaging_api.service.user.UserService;
 import com.elleined.rt_messaging_api.ws.WSService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/users/{currentUserId}/group-chats/{groupChatId}/polls/{pollId}/options")
@@ -35,22 +34,23 @@ public class OptionController {
     private final WSService wsService;
 
     @GetMapping
-    public List<OptionDTO> getAll(@PathVariable("currentUserId") int currentUserId,
+    public Page<OptionDTO> getAll(@PathVariable("currentUserId") int currentUserId,
                                   @PathVariable("groupChatId") int groupChatId,
                                   @PathVariable("pollId") int pollId,
                                   @RequestParam(required = false, defaultValue = "1", value = "pageNumber") int pageNumber,
                                   @RequestParam(required = false, defaultValue = "5", value = "pageSize") int pageSize,
                                   @RequestParam(required = false, defaultValue = "ASC", value = "sortDirection") Sort.Direction direction,
-                                  @RequestParam(required = false, defaultValue = "id", value = "sortBy") String sortBy) {
+                                  @RequestParam(required = false, defaultValue = "id", value = "sortBy") String sortBy,
+                                  @RequestParam(defaultValue = "false", name = "includeRelatedLinks") boolean includeRelatedLinks) {
 
         User currentUser = userService.getById(currentUserId);
         GroupChat groupChat = groupChatService.getById(groupChatId);
         Poll poll = pollService.getById(pollId);
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, direction, sortBy);
 
-        return optionService.getAll(currentUser, groupChat, poll, pageable).stream()
+        return optionService.getAll(currentUser, groupChat, poll, pageable)
                 .map(optionMapper::toDTO)
-                .toList();
+                .map(dto -> dto.addLinks(currentUser, includeRelatedLinks));
     }
 
     @PatchMapping("/{optionId}")
@@ -82,7 +82,8 @@ public class OptionController {
     public OptionDTO save(@PathVariable("currentUserId") int currentUserId,
                        @PathVariable("groupChatId") int groupChatId,
                        @PathVariable("pollId") int pollId,
-                       @RequestParam("option") String option) {
+                       @RequestParam("option") String option,
+                          @RequestParam(defaultValue = "false", name = "includeRelatedLinks") boolean includeRelatedLinks) {
 
         User currentUser = userService.getById(currentUserId);
         GroupChat groupChat = groupChatService.getById(groupChatId);
@@ -93,6 +94,6 @@ public class OptionController {
         OptionDTO optionDTO = optionMapper.toDTO(savedOption);
 
         wsService.broadcast(groupChat, STR."\{currentUser.getName()} added an option to the poll: \{poll.getQuestion()}");
-        return optionDTO;
+        return optionDTO.addLinks(currentUser, includeRelatedLinks);
     }
 }
