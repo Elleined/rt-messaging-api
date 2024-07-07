@@ -58,18 +58,6 @@ public abstract class Chat extends PrimaryKeyIdentity {
     )
     private Map<User, String> nicknames;
 
-    public List<Integer> messageIds() {
-        return this.getMessages().stream()
-                .map(PrimaryKeyIdentity::getId)
-                .toList();
-    }
-
-    public List<Integer> pinMessageIds() {
-        return this.getPinMessages().stream()
-                .map(PrimaryKeyIdentity::getId)
-                .toList();
-    }
-
     public boolean notOwned(Message message) {
         return !this.getMessages().contains(message);
     }

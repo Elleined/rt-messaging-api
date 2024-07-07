@@ -9,7 +9,6 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Entity
 @Table(
@@ -61,11 +60,4 @@ public class Option extends PrimaryKeyIdentity {
             )
     )
     private Set<User> votingUsers;
-
-    public Set<Integer> votingUserIds() {
-        return this.getVotingUsers().stream()
-                .map(PrimaryKeyIdentity::getId)
-                .collect(Collectors.toSet());
-    }
-
 }

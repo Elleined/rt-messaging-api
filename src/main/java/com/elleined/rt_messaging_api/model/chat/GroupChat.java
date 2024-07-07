@@ -46,18 +46,6 @@ public class GroupChat extends Chat {
     )
     private Set<User> receivers;
 
-    public Set<Integer> receiverIds() {
-        return this.getReceivers().stream()
-                .map(PrimaryKeyIdentity::getId)
-                .collect(Collectors.toSet());
-    }
-
-    public List<Integer> pollIds() {
-        return this.getPolls().stream()
-                .map(PrimaryKeyIdentity::getId)
-                .toList();
-    }
-
     public boolean notOwned(Poll poll) {
         return !this.getPolls().contains(poll);
     }
