@@ -32,12 +32,6 @@ public class ChatDTO extends DTO {
     }
 
     @Override
-    public ChatDTO addLinks(User currentUser, boolean doInclude) {
-        super.addLinks(currentUser, doInclude);
-        return this;
-    }
-
-    @Override
     protected List<Link> getAllRelatedLinks(User currentUser, boolean doInclude) {
         return List.of();
     }

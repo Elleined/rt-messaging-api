@@ -115,8 +115,8 @@ public class GroupChatServiceImpl implements GroupChatService {
     }
 
     @Override
-    public List<GroupChat> getAll(User currentUser, Pageable pageable) {
-        return userRepository.findAllGroupChats(currentUser, pageable).getContent();
+    public Page<GroupChat> getAll(User currentUser, Pageable pageable) {
+        return userRepository.findAllGroupChats(currentUser, pageable);
     }
 
     @Override
