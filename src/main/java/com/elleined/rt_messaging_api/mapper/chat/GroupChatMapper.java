@@ -22,7 +22,6 @@ public interface GroupChatMapper extends CustomMapper<GroupChat, GroupChatDTO> {
             @Mapping(target = "id", source = "id"),
             @Mapping(target = "createdAt", source = "createdAt"),
             @Mapping(target = "creatorDTO", source = "creator"),
-            @Mapping(target = "nicknames", expression = "java(groupChat.getNicknameDTOs())"),
             @Mapping(target = "name", source = "name"),
             @Mapping(target = "picture", source = "picture"),
     })

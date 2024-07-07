@@ -14,7 +14,6 @@ public abstract class DTO extends HateoasDTO {
     private int id;
     private LocalDateTime createdAt;
 
-    @Builder
     public DTO(int id, LocalDateTime createdAt) {
         this.id = id;
         this.createdAt = createdAt;

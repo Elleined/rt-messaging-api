@@ -19,9 +19,7 @@ import org.mapstruct.Mappings;
                 Message.Status.class
         },
         uses = {
-                UserMapper.class,
-                GroupChatMapper.class,
-                PrivateChatMapper.class
+                UserMapper.class
         }
 )
 public interface MessageMapper extends CustomMapper<Message, MessageDTO> {

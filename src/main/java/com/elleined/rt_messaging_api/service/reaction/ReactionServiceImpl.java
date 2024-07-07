@@ -239,12 +239,12 @@ public class ReactionServiceImpl implements ReactionService {
 
     @Override
     public Page<Reaction> getAllByEmoji(User currentUser, PrivateChat privateChat, Message message, Reaction.Emoji emoji, Pageable pageable) {
-        return reactionRepository.findAllByEmoji(currentUser, privateChat, message, emoji, pageable);
+        return reactionRepository.findAllByEmoji(privateChat, message, emoji, pageable);
     }
 
     @Override
     public Page<Reaction> getAllByEmoji(User currentUser, GroupChat groupChat, Message message, Reaction.Emoji emoji, Pageable pageable) {
-        return reactionRepository.findAllByEmoji(currentUser, groupChat, message, emoji, pageable);
+        return reactionRepository.findAllByEmoji(groupChat, message, emoji, pageable);
     }
 
     @Override

@@ -18,12 +18,8 @@ public class PrivateChatDTO extends ChatDTO {
     private UserDTO receiverDTO;
 
     @Builder
-    public PrivateChatDTO(int id,
-                          LocalDateTime createdAt,
-                          UserDTO creatorDTO,
-                          Map<Integer, String> nicknames,
-                          UserDTO receiverDTO) {
-        super(id, createdAt, creatorDTO, nicknames);
+    public PrivateChatDTO(int id, LocalDateTime createdAt, UserDTO creatorDTO, UserDTO receiverDTO) {
+        super(id, createdAt, creatorDTO);
         this.receiverDTO = receiverDTO;
     }
 

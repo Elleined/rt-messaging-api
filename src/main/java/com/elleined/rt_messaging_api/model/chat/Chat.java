@@ -72,10 +72,6 @@ public abstract class Chat extends PrimaryKeyIdentity {
                 .anyMatch(message::equals);
     }
 
-    public String getNickname(User user) {
-        return this.getNicknames().get(user);
-    }
-
     public Map<Integer, String> getNicknameDTOs() {
         Map<Integer, String> userIdNicknames = new HashMap<>();
         for (Map.Entry<User, String> entry : nicknames.entrySet()) {

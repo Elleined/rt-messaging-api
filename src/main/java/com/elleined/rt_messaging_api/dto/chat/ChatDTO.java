@@ -19,16 +19,11 @@ import java.util.Map;
 @Setter
 public class ChatDTO extends DTO {
     private UserDTO creatorDTO;
-    private Map<Integer, String> nicknames;
 
-    @Builder
-    public ChatDTO(int id,
-                   LocalDateTime createdAt,
-                   UserDTO creatorDTO,
-                   Map<Integer, String> nicknames) {
+
+    public ChatDTO(int id, LocalDateTime createdAt, UserDTO creatorDTO) {
         super(id, createdAt);
         this.creatorDTO = creatorDTO;
-        this.nicknames = nicknames;
     }
 
     @Override
