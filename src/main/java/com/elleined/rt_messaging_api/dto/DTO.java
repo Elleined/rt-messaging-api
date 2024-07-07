@@ -1,5 +1,6 @@
 package com.elleined.rt_messaging_api.dto;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,9 +10,13 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@SuperBuilder
-@NoArgsConstructor
-public abstract class DTO {
+public abstract class DTO extends HateoasDTO {
     private int id;
     private LocalDateTime createdAt;
+
+    @Builder
+    public DTO(int id, LocalDateTime createdAt) {
+        this.id = id;
+        this.createdAt = createdAt;
+    }
 }
