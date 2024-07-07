@@ -1,11 +1,5 @@
 package com.elleined.rt_messaging_api.repository.chat;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 import com.elleined.rt_messaging_api.mapper.chat.PrivateChatMapper;
 import com.elleined.rt_messaging_api.mapper.user.UserMapper;
 import com.elleined.rt_messaging_api.model.chat.PrivateChat;
@@ -20,8 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.TestPropertySource;
-
-import java.util.HashMap;
 
 @DataJpaTest
 @ExtendWith(MockitoExtension.class)

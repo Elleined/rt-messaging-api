@@ -17,8 +17,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.HtmlUtils;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/users/{currentUserId}")
 @RequiredArgsConstructor

@@ -6,15 +6,12 @@ import com.elleined.rt_messaging_api.model.chat.PrivateChat;
 import com.elleined.rt_messaging_api.model.user.User;
 import com.elleined.rt_messaging_api.service.chat.pv.PrivateChatService;
 import com.elleined.rt_messaging_api.service.user.UserService;
-import com.elleined.rt_messaging_api.ws.WSService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/users/{currentUserId}/private-chats")

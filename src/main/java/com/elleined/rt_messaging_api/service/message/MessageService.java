@@ -1,6 +1,5 @@
 package com.elleined.rt_messaging_api.service.message;
 
-import com.elleined.rt_messaging_api.model.chat.Chat;
 import com.elleined.rt_messaging_api.model.chat.GroupChat;
 import com.elleined.rt_messaging_api.model.chat.PrivateChat;
 import com.elleined.rt_messaging_api.model.message.Message;
@@ -8,8 +7,6 @@ import com.elleined.rt_messaging_api.model.user.User;
 import com.elleined.rt_messaging_api.service.CustomService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-import java.util.List;
 
 public interface MessageService extends CustomService<Message> {
     Page<Message> getAllMessage(User currentUser, GroupChat groupChat, Pageable pageable);

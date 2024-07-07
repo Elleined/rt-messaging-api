@@ -1,7 +1,6 @@
 package com.elleined.rt_messaging_api.dto.poll;
 
 import com.elleined.rt_messaging_api.dto.DTO;
-import com.elleined.rt_messaging_api.dto.HateoasDTO;
 import com.elleined.rt_messaging_api.dto.chat.GroupChatDTO;
 import com.elleined.rt_messaging_api.dto.user.UserDTO;
 import com.elleined.rt_messaging_api.model.user.User;

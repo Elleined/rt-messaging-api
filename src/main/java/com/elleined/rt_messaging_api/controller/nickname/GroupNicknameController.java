@@ -1,7 +1,6 @@
 package com.elleined.rt_messaging_api.controller.nickname;
 
 import com.elleined.rt_messaging_api.model.chat.GroupChat;
-import com.elleined.rt_messaging_api.model.chat.PrivateChat;
 import com.elleined.rt_messaging_api.model.user.User;
 import com.elleined.rt_messaging_api.service.chat.group.GroupChatService;
 import com.elleined.rt_messaging_api.service.user.UserService;

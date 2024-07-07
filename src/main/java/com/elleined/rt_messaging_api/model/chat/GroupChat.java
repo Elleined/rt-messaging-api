@@ -1,6 +1,5 @@
 package com.elleined.rt_messaging_api.model.chat;
 
-import com.elleined.rt_messaging_api.model.PrimaryKeyIdentity;
 import com.elleined.rt_messaging_api.model.poll.Poll;
 import com.elleined.rt_messaging_api.model.user.User;
 import jakarta.persistence.*;
@@ -11,7 +10,6 @@ import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "tbl_group_chat")

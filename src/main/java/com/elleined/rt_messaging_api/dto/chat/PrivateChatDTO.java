@@ -1,16 +1,12 @@
 package com.elleined.rt_messaging_api.dto.chat;
 
-import com.elleined.rt_messaging_api.dto.HateoasDTO;
 import com.elleined.rt_messaging_api.dto.user.UserDTO;
 import com.elleined.rt_messaging_api.model.user.User;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
-import java.util.Map;
 
 @Getter
 @Setter

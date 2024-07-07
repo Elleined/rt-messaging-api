@@ -2,8 +2,6 @@ package com.elleined.rt_messaging_api.mapper.message;
 
 import com.elleined.rt_messaging_api.dto.message.MessageDTO;
 import com.elleined.rt_messaging_api.mapper.CustomMapper;
-import com.elleined.rt_messaging_api.mapper.chat.GroupChatMapper;
-import com.elleined.rt_messaging_api.mapper.chat.PrivateChatMapper;
 import com.elleined.rt_messaging_api.mapper.user.UserMapper;
 import com.elleined.rt_messaging_api.model.chat.Chat;
 import com.elleined.rt_messaging_api.model.message.Message;

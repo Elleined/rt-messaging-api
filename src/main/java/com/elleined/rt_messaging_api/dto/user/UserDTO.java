@@ -1,18 +1,14 @@
 package com.elleined.rt_messaging_api.dto.user;
 
 import com.elleined.rt_messaging_api.dto.DTO;
-import com.elleined.rt_messaging_api.dto.HateoasDTO;
 import com.elleined.rt_messaging_api.model.user.User;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 import org.springframework.hateoas.Link;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
