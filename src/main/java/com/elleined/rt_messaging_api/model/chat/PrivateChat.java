@@ -1,14 +1,15 @@
 package com.elleined.rt_messaging_api.model.chat;
 
 import com.elleined.rt_messaging_api.model.user.User;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+@Cacheable
+@org.hibernate.annotations.Cache(region = "rtmaPrivateChat", usage = CacheConcurrencyStrategy.READ_WRITE)
 
 @Entity
 @Table(name = "tbl_private_chat")
