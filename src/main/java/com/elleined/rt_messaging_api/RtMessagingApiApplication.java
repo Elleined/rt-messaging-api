@@ -20,9 +20,4 @@ public class RtMessagingApiApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(RtMessagingApiApplication.class, args);
 	}
-
-	@Bean
-	public Faker faker() {
-		return new Faker();
-	}
 }

@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/users/{currentUserId}/group-chats/{groupChatId}/polls")
+@RequestMapping("/users/group-chats/{groupChatId}/polls")
 @RequiredArgsConstructor
 public class PollController {
     private final UserService userService;
@@ -35,31 +35,28 @@ public class PollController {
     private final WSService wsService;
 
     @GetMapping
-    public Page<PollDTO> getAll(@PathVariable("currentUserId") int currentUserId,
+    public Page<PollDTO> getAll(@RequestHeader("Authorization") String jwt,
                                 @PathVariable("groupChatId") int groupChatId,
                                 @RequestParam(required = false, defaultValue = "1", value = "pageNumber") int pageNumber,
                                 @RequestParam(required = false, defaultValue = "5", value = "pageSize") int pageSize,
                                 @RequestParam(required = false, defaultValue = "ASC", value = "sortDirection") Sort.Direction direction,
-                                @RequestParam(required = false, defaultValue = "id", value = "sortBy") String sortBy,
-                                @RequestParam(defaultValue = "false", name = "includeRelatedLinks") boolean includeRelatedLinks) {
+                                @RequestParam(required = false, defaultValue = "id", value = "sortBy") String sortBy) {
 
-        User currentUser = userService.getById(currentUserId);
+        User currentUser = userService.getByJWT(jwt);
         GroupChat groupChat = groupChatService.getById(groupChatId);
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, direction, sortBy);
 
         return pollService.getAll(currentUser, groupChat, pageable)
-                .map(pollMapper::toDTO)
-                .map(dto -> dto.addLinks(currentUser, includeRelatedLinks));
+                .map(pollMapper::toDTO);
     }
 
     @PostMapping
-    public PollDTO save(@PathVariable("currentUserId") int currentUserId,
+    public PollDTO save(@RequestHeader("Authorization") String jwt,
                         @PathVariable("groupChatId") int groupChatId,
                         @RequestParam("question") String question,
-                        @RequestParam("options") List<String> options,
-                        @RequestParam(defaultValue = "false", name = "includeRelatedLinks") boolean includeRelatedLinks) {
+                        @RequestParam("options") List<String> options) {
 
-        User currentUser = userService.getById(currentUserId);
+        User currentUser = userService.getByJWT(jwt);
         GroupChat groupChat = groupChatService.getById(groupChatId);
 
         Poll poll = pollService.save(currentUser, groupChat, question);
@@ -67,6 +64,6 @@ public class PollController {
 
         PollDTO pollDTO = pollMapper.toDTO(poll);
         wsService.broadcast(groupChat, STR."\{currentUser.getName()} created a poll.");
-        return pollDTO.addLinks(currentUser, includeRelatedLinks);
+        return pollDTO;
     }
 }

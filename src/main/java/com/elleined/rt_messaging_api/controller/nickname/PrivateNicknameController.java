@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/users/{currentUserId}/private-chats/{privateChatId}/nicknames/{nicknamedUserId}")
+@RequestMapping("/users/private-chats/{privateChatId}/nicknames/{nicknamedUserId}")
 @RequiredArgsConstructor
 public class PrivateNicknameController {
     private final UserService userService;
@@ -19,12 +19,12 @@ public class PrivateNicknameController {
     private final WSService wsService;
 
     @PostMapping
-    public String setNickname(@PathVariable("currentUserId") int currentUserId,
+    public String setNickname(@RequestHeader("Authorization") String jwt,
                               @PathVariable("privateChatId") int privateChatId,
                               @PathVariable("nicknamedUserId") int nicknamedUserId,
                               @RequestParam("nickname") String nickname) {
 
-        User currentUser = userService.getById(currentUserId);
+        User currentUser = userService.getByJWT(jwt);
         User nicknamedUser = userService.getById(nicknamedUserId);
         PrivateChat privateChat = privateChatService.getById(privateChatId);
 
@@ -38,11 +38,11 @@ public class PrivateNicknameController {
     }
 
     @PatchMapping
-    public void removeNickname(@PathVariable("currentUserId") int currentUserId,
+    public void removeNickname(@RequestHeader("Authorization") String jwt,
                                @PathVariable("privateChatId") int privateChatId,
                                @PathVariable("nicknamedUserId") int nicknamedUserId) {
 
-        User currentUser = userService.getById(currentUserId);
+        User currentUser = userService.getByJWT(jwt);
         User nicknamedUser = userService.getById(nicknamedUserId);
         PrivateChat privateChat = privateChatService.getById(privateChatId);
 

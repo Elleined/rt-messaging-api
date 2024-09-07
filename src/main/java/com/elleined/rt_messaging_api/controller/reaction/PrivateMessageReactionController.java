@@ -19,7 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/users/{currentUserId}/private-chats/{chatId}/messages/{messageId}/reactions")
+@RequestMapping("/users/private-chats/{chatId}/messages/{messageId}/reactions")
 @RequiredArgsConstructor
 public class PrivateMessageReactionController {
     private final UserService userService;
@@ -34,76 +34,71 @@ public class PrivateMessageReactionController {
     private final WSService wsService;
 
     @PostMapping
-    public ReactionDTO save(@PathVariable("currentUserId") int currentUserId,
+    public ReactionDTO save(@RequestHeader("Authorization") String jwt,
                             @PathVariable("chatId") int chatId,
                             @PathVariable("messageId") int messageId,
-                            @RequestParam("emoji") Reaction.Emoji emoji,
-                            @RequestParam(defaultValue = "false", name = "includeRelatedLinks") boolean includeRelatedLinks) {
+                            @RequestParam("emoji") Reaction.Emoji emoji) {
 
-        User currentUser = userService.getById(currentUserId);
+        User currentUser = userService.getByJWT(jwt);
         PrivateChat privateChat = privateChatService.getById(chatId);
         Message message = messageService.getById(messageId);
 
         if (reactionService.isAlreadyReactedTo(currentUser, privateChat, message)) {
             Reaction reaction = reactionService.getByUser(currentUser, privateChat, message);
             reactionService.update(currentUser, privateChat, message, reaction, emoji);
-            return reactionMapper.toDTO(reaction).addLinks(currentUser, includeRelatedLinks);
+            return reactionMapper.toDTO(reaction);
         }
 
         Reaction reaction = reactionService.save(currentUser, privateChat, emoji, message);
         ReactionDTO reactionDTO =  reactionMapper.toDTO(reaction);
         wsService.broadcast(privateChat, message, reactionDTO);
-        return reactionDTO.addLinks(currentUser, includeRelatedLinks);
+        return reactionDTO;
     }
 
     @GetMapping
-    public Page<ReactionDTO> getAll(@PathVariable("currentUserId") int currentUserId,
+    public Page<ReactionDTO> getAll(@RequestHeader("Authorization") String jwt,
                                     @PathVariable("chatId") int chatId,
                                     @PathVariable("messageId") int messageId,
                                     @RequestParam(required = false, defaultValue = "1", value = "pageNumber") int pageNumber,
                                     @RequestParam(required = false, defaultValue = "5", value = "pageSize") int pageSize,
                                     @RequestParam(required = false, defaultValue = "ASC", value = "sortDirection") Sort.Direction direction,
-                                    @RequestParam(required = false, defaultValue = "id", value = "sortBy") String sortBy,
-                                    @RequestParam(defaultValue = "false", name = "includeRelatedLinks") boolean includeRelatedLinks) {
+                                    @RequestParam(required = false, defaultValue = "id", value = "sortBy") String sortBy) {
 
-        User currentUser = userService.getById(currentUserId);
+        User currentUser = userService.getByJWT(jwt);
         PrivateChat privateChat = privateChatService.getById(chatId);
         Message message = messageService.getById(messageId);
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, direction, sortBy);
 
         return reactionService.getAll(currentUser, privateChat, message, pageable)
-                .map(reactionMapper::toDTO)
-                .map(dto -> dto.addLinks(currentUser, includeRelatedLinks));
+                .map(reactionMapper::toDTO);
     }
 
     @GetMapping("/emoji")
-    public Page<ReactionDTO> getAllByEmoji(@PathVariable("currentUserId") int currentUserId,
+    public Page<ReactionDTO> getAllByEmoji(@RequestHeader("Authorization") String jwt,
                                            @PathVariable("chatId") int chatId,
                                            @PathVariable("messageId") int messageId,
                                            @RequestParam("emoji") Reaction.Emoji emoji,
                                            @RequestParam(required = false, defaultValue = "1", value = "pageNumber") int pageNumber,
                                            @RequestParam(required = false, defaultValue = "5", value = "pageSize") int pageSize,
                                            @RequestParam(required = false, defaultValue = "ASC", value = "sortDirection") Sort.Direction direction,
-                                           @RequestParam(required = false, defaultValue = "id", value = "sortBy") String sortBy,
-                                           @RequestParam(defaultValue = "false", name = "includeRelatedLinks") boolean includeRelatedLinks) {
+                                           @RequestParam(required = false, defaultValue = "id", value = "sortBy") String sortBy) {
 
-        User currentUser = userService.getById(currentUserId);
+        User currentUser = userService.getByJWT(jwt);
         PrivateChat privateChat = privateChatService.getById(chatId);
         Message message = messageService.getById(messageId);
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, direction, sortBy);
 
         return reactionService.getAllByEmoji(currentUser, privateChat, message, emoji, pageable)
-                .map(reactionMapper::toDTO)
-                .map(dto -> dto.addLinks(currentUser, includeRelatedLinks));
+                .map(reactionMapper::toDTO);
     }
 
     @DeleteMapping("/{reactionId}")
-    public void delete(@PathVariable("currentUserId") int currentUserId,
+    public void delete(@RequestHeader("Authorization") String jwt,
                        @PathVariable("chatId") int chatId,
                        @PathVariable("messageId") int messageId,
                        @PathVariable("reactionId") int reactionId) {
 
-        User currentUser = userService.getById(currentUserId);
+        User currentUser = userService.getByJWT(jwt);
         PrivateChat privateChat = privateChatService.getById(chatId);
         Message message = messageService.getById(messageId);
         Reaction reaction = reactionService.getById(reactionId);

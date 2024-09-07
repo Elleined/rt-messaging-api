@@ -19,7 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/users/{currentUserId}/group-chats/{groupChatId}/pin-messages")
+@RequestMapping("/users/group-chats/{groupChatId}/pin-messages")
 @RequiredArgsConstructor
 public class GroupPinMessageController {
     private final UserService userService;
@@ -34,44 +34,41 @@ public class GroupPinMessageController {
     private final WSService wsService;
 
     @GetMapping
-    public Page<PinMessageDTO> getAll(@PathVariable("currentUserId") int currentUserId,
+    public Page<PinMessageDTO> getAll(@RequestHeader("Authorization") String jwt,
                                       @PathVariable("groupChatId") int groupChatId,
                                       @RequestParam(required = false, defaultValue = "1", value = "pageNumber") int pageNumber,
                                       @RequestParam(required = false, defaultValue = "5", value = "pageSize") int pageSize,
                                       @RequestParam(required = false, defaultValue = "ASC", value = "sortDirection") Sort.Direction direction,
-                                      @RequestParam(required = false, defaultValue = "id", value = "sortBy") String sortBy,
-                                      @RequestParam(defaultValue = "false", name = "includeRelatedLinks") boolean includeRelatedLinks) {
+                                      @RequestParam(required = false, defaultValue = "id", value = "sortBy") String sortBy) {
 
-        User currentUser = userService.getById(currentUserId);
+        User currentUser = userService.getByJWT(jwt);
         GroupChat groupChat = groupChatService.getById(groupChatId);
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, direction, sortBy);
 
         return pinMessageService.getAll(currentUser, groupChat, pageable)
-                .map(pinMessageMapper::toDTO)
-                .map(dto -> dto.addLinks(currentUser, includeRelatedLinks));
+                .map(pinMessageMapper::toDTO);
     }
 
     @PostMapping
-    public PinMessageDTO pin(@PathVariable("currentUserId") int currentUserId,
+    public PinMessageDTO pin(@RequestHeader("Authorization") String jwt,
                              @PathVariable("groupChatId") int groupChatId,
-                             @RequestParam("messageId") int messageId,
-                             @RequestParam(defaultValue = "false", name = "includeRelatedLinks") boolean includeRelatedLinks) {
+                             @RequestParam("messageId") int messageId) {
 
-        User currentUser = userService.getById(currentUserId);
+        User currentUser = userService.getByJWT(jwt);
         GroupChat groupChat = groupChatService.getById(groupChatId);
         Message message = messageService.getById(messageId);
 
         PinMessage pinMessage = pinMessageService.pin(currentUser, groupChat, message);
         wsService.broadcast(groupChat, STR."\{currentUser.getName()} pinned a message.");
-        return pinMessageMapper.toDTO(pinMessage).addLinks(currentUser, includeRelatedLinks);
+        return pinMessageMapper.toDTO(pinMessage);
     }
 
     @DeleteMapping("/{pinMessageId}")
-    public void unpin(@PathVariable("currentUserId") int currentUserId,
+    public void unpin(@RequestHeader("Authorization") String jwt,
                       @PathVariable("groupChatId") int groupChatId,
                       @PathVariable("pinMessageId") int pinMessageId) {
 
-        User currentUser = userService.getById(currentUserId);
+        User currentUser = userService.getByJWT(jwt);
         GroupChat groupChat = groupChatService.getById(groupChatId);
         PinMessage pinMessage = pinMessageService.getById(pinMessageId);
 

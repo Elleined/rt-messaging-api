@@ -35,8 +35,8 @@ class PrivateChatRepositoryTest {
     void setNickname() {
         Faker faker = new Faker();
 
-        User creator = userMapper.toEntity(faker.name().fullName(), faker.avatar().image());
-        User receiver = userMapper.toEntity(faker.name().fullName(), faker.avatar().image());
+        User creator = userMapper.toEntity(faker.name().fullName(), faker.avatar().image(), , );
+        User receiver = userMapper.toEntity(faker.name().fullName(), faker.avatar().image(), , );
 
         PrivateChat privateChat = privateChatMapper.toEntity(creator, receiver);
 
