@@ -15,6 +15,7 @@ public interface UserMapper extends CustomMapper<User, UserDTO> {
             @Mapping(target = "id", source = "id"),
             @Mapping(target = "createdAt", source = "createdAt"),
             @Mapping(target = "name", source = "name"),
+            @Mapping(target = "email", source = "email"),
             @Mapping(target = "image", source = "image")
     })
     UserDTO toDTO(User user);
@@ -23,6 +24,8 @@ public interface UserMapper extends CustomMapper<User, UserDTO> {
             @Mapping(target = "id", ignore = true),
             @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())"),
             @Mapping(target = "name", source = "name"),
+            @Mapping(target = "email", source = "email"),
+            @Mapping(target = "password", source = "password"),
             @Mapping(target = "image", source = "image"),
             @Mapping(target = "receivedGroupChats", expression = "java(new java.util.HashSet<>())"),
             @Mapping(target = "createdPrivateChats", expression = "java(new java.util.ArrayList<>())"),
@@ -32,5 +35,7 @@ public interface UserMapper extends CustomMapper<User, UserDTO> {
             @Mapping(target = "receivedMentions", expression = "java(new java.util.ArrayList<>())"),
     })
     User toEntity(String name,
-                  String image);
+                  String image,
+                  String email,
+                  String password);
 }

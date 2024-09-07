@@ -26,7 +26,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/users/{currentUserId}/group-chats/{groupChatId}/messages")
+@RequestMapping("/users/group-chats/{groupChatId}/messages")
 @RequiredArgsConstructor
 public class GroupMessageController {
     private final UserService userService;
@@ -42,30 +42,28 @@ public class GroupMessageController {
     private final WSService wsService;
 
     @GetMapping
-    public Page<MessageDTO> getAllMessage(@PathVariable("currentUserId") int currentUserId,
+    public Page<MessageDTO> getAllMessage(@RequestHeader("Authorization") String jwt,
                                           @PathVariable("groupChatId") int groupChatId,
                                           @RequestParam(required = false, defaultValue = "1", value = "pageNumber") int pageNumber,
                                           @RequestParam(required = false, defaultValue = "5", value = "pageSize") int pageSize,
                                           @RequestParam(required = false, defaultValue = "ASC", value = "sortDirection") Sort.Direction direction,
-                                          @RequestParam(required = false, defaultValue = "id", value = "sortBy") String sortBy,
-                                          @RequestParam(defaultValue = "false", name = "includeRelatedLinks") boolean includeRelatedLinks) {
+                                          @RequestParam(required = false, defaultValue = "id", value = "sortBy") String sortBy) {
 
-        User currentUser = userService.getById(currentUserId);
+        User currentUser = userService.getByJWT(jwt);
         GroupChat groupChat = groupChatService.getById(groupChatId);
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, direction, sortBy);
 
         return messageService.getAllMessage(currentUser, groupChat, pageable)
-                .map(messageMapper::toDTO)
-                .map(dto -> dto.addLinks(currentUser, includeRelatedLinks));
+                .map(messageMapper::toDTO);
     }
 
 
     @DeleteMapping("/{messageId}/unsent")
-    public void unsent(@PathVariable("currentUserId") int currentUserId,
+    public void unsent(@RequestHeader("Authorization") String jwt,
                        @PathVariable("groupChatId") int groupChatId,
                        @PathVariable("messageId") int messageId) {
 
-        User currentUser = userService.getById(currentUserId);
+        User currentUser = userService.getByJWT(jwt);
         GroupChat groupChat = groupChatService.getById(groupChatId);
         Message message = messageService.getById(messageId);
 
@@ -77,14 +75,13 @@ public class GroupMessageController {
     }
 
     @PostMapping
-    public MessageDTO save(@PathVariable("currentUserId") int currentUserId,
+    public MessageDTO save(@RequestHeader("Authorization") String jwt,
                            @PathVariable("groupChatId") int groupChatId,
                            @RequestParam("content") String content,
                            @RequestParam("contentType") Message.ContentType contentType,
-                           @RequestParam(required = false, name = "mentionUserIds") List<Integer> mentionUserIds,
-                           @RequestParam(defaultValue = "false", name = "includeRelatedLinks") boolean includeRelatedLinks) {
+                           @RequestParam(required = false, name = "mentionUserIds") List<Integer> mentionUserIds) {
 
-        User currentUser = userService.getById(currentUserId);
+        User currentUser = userService.getByJWT(jwt);
         GroupChat groupChat = groupChatService.getById(groupChatId);
         String sanitizeContent = HtmlUtils.htmlEscape(content);
         List<User> mentionedUsers = userService.getAllById(mentionUserIds);
@@ -99,6 +96,6 @@ public class GroupMessageController {
 
         wsService.broadcastAll(groupChat, message, mentionDTOS);
         wsService.broadcast(groupChat, messageDTO);
-        return messageDTO.addLinks(currentUser, includeRelatedLinks);
+        return messageDTO;
     }
 }
