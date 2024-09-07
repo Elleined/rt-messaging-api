@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/users/{currentUserId}/group-chats/{groupChatId}/nicknames/{nicknamedUserId}")
+@RequestMapping("/users/group-chats/{groupChatId}/nicknames/{nicknamedUserId}")
 @RequiredArgsConstructor
 public class GroupNicknameController {
     private final UserService userService;
@@ -19,12 +19,12 @@ public class GroupNicknameController {
     private final WSService wsService;
 
     @PostMapping
-    public String setNickname(@PathVariable("currentUserId") int currentUserId,
+    public String setNickname(@RequestHeader("Authorization") String jwt,
                               @PathVariable("groupChatId") int groupChatId,
                               @PathVariable("nicknamedUserId") int nicknamedUserId,
                               @RequestParam("nickname") String nickname) {
 
-        User currentUser = userService.getById(currentUserId);
+        User currentUser = userService.getByJWT(jwt);
         User nicknamedUser = userService.getById(nicknamedUserId);
         GroupChat groupChat = groupChatService.getById(groupChatId);
 
@@ -38,11 +38,11 @@ public class GroupNicknameController {
     }
 
     @PatchMapping
-    public void removeNickname(@PathVariable("currentUserId") int currentUserId,
+    public void removeNickname(@RequestHeader("Authorization") String jwt,
                                @PathVariable("groupChatId") int groupChatId,
                                @PathVariable("nicknamedUserId") int nicknamedUserId) {
 
-        User currentUser = userService.getById(currentUserId);
+        User currentUser = userService.getByJWT(jwt);
         User nicknamedUser = userService.getById(nicknamedUserId);
         GroupChat groupChat = groupChatService.getById(groupChatId);
 

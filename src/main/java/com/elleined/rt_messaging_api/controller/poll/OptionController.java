@@ -20,7 +20,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/users/{currentUserId}/group-chats/{groupChatId}/polls/{pollId}/options")
+@RequestMapping("/users/group-chats/{groupChatId}/polls/{pollId}/options")
 @RequiredArgsConstructor
 public class OptionController {
     private final UserService userService;
@@ -34,32 +34,30 @@ public class OptionController {
     private final WSService wsService;
 
     @GetMapping
-    public Page<OptionDTO> getAll(@PathVariable("currentUserId") int currentUserId,
+    public Page<OptionDTO> getAll(@RequestHeader("Authorization") String jwt,
                                   @PathVariable("groupChatId") int groupChatId,
                                   @PathVariable("pollId") int pollId,
                                   @RequestParam(required = false, defaultValue = "1", value = "pageNumber") int pageNumber,
                                   @RequestParam(required = false, defaultValue = "5", value = "pageSize") int pageSize,
                                   @RequestParam(required = false, defaultValue = "ASC", value = "sortDirection") Sort.Direction direction,
-                                  @RequestParam(required = false, defaultValue = "id", value = "sortBy") String sortBy,
-                                  @RequestParam(defaultValue = "false", name = "includeRelatedLinks") boolean includeRelatedLinks) {
+                                  @RequestParam(required = false, defaultValue = "id", value = "sortBy") String sortBy) {
 
-        User currentUser = userService.getById(currentUserId);
+        User currentUser = userService.getByJWT(jwt);
         GroupChat groupChat = groupChatService.getById(groupChatId);
         Poll poll = pollService.getById(pollId);
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, direction, sortBy);
 
         return optionService.getAll(currentUser, groupChat, poll, pageable)
-                .map(optionMapper::toDTO)
-                .map(dto -> dto.addLinks(currentUser, includeRelatedLinks));
+                .map(optionMapper::toDTO);
     }
 
     @PatchMapping("/{optionId}")
-    public void vote(@PathVariable("currentUserId") int currentUserId,
+    public void vote(@RequestHeader("Authorization") String jwt,
                      @PathVariable("groupChatId") int groupChatId,
                      @PathVariable("pollId") int pollId,
                      @PathVariable("optionId") int optionId) {
 
-        User currentUser = userService.getById(currentUserId);
+        User currentUser = userService.getByJWT(jwt);
         GroupChat groupChat = groupChatService.getById(groupChatId);
         Poll poll = pollService.getById(pollId);
         Option selectedOption = optionService.getById(optionId);
@@ -79,13 +77,12 @@ public class OptionController {
     }
 
     @PostMapping
-    public OptionDTO save(@PathVariable("currentUserId") int currentUserId,
+    public OptionDTO save(@RequestHeader("Authorization") String jwt,
                        @PathVariable("groupChatId") int groupChatId,
                        @PathVariable("pollId") int pollId,
-                       @RequestParam("option") String option,
-                          @RequestParam(defaultValue = "false", name = "includeRelatedLinks") boolean includeRelatedLinks) {
+                       @RequestParam("option") String option) {
 
-        User currentUser = userService.getById(currentUserId);
+        User currentUser = userService.getByJWT(jwt);
         GroupChat groupChat = groupChatService.getById(groupChatId);
         Poll poll = pollService.getById(pollId);
 
@@ -94,6 +91,6 @@ public class OptionController {
         OptionDTO optionDTO = optionMapper.toDTO(savedOption);
 
         wsService.broadcast(groupChat, STR."\{currentUser.getName()} added an option to the poll: \{poll.getQuestion()}");
-        return optionDTO.addLinks(currentUser, includeRelatedLinks);
+        return optionDTO;
     }
 }

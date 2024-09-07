@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.HtmlUtils;
 
 @RestController
-@RequestMapping("/users/{currentUserId}")
+@RequestMapping("/users")
 @RequiredArgsConstructor
 public class PrivateMessageController {
     private final UserService userService;
@@ -31,29 +31,27 @@ public class PrivateMessageController {
     private final WSService wsService;
 
     @GetMapping("/private-chats/{privateChatId}/messages")
-    public Page<MessageDTO> getAllMessage(@PathVariable("currentUserId") int currentUserId,
+    public Page<MessageDTO> getAllMessage(@RequestHeader("Authorization") String jwt,
                                           @PathVariable("privateChatId") int privateChatId,
                                           @RequestParam(required = false, defaultValue = "1", value = "pageNumber") int pageNumber,
                                           @RequestParam(required = false, defaultValue = "5", value = "pageSize") int pageSize,
                                           @RequestParam(required = false, defaultValue = "ASC", value = "sortDirection") Sort.Direction direction,
-                                          @RequestParam(required = false, defaultValue = "id", value = "sortBy") String sortBy,
-                                          @RequestParam(defaultValue = "false", name = "includeRelatedLinks") boolean includeRelatedLinks) {
+                                          @RequestParam(required = false, defaultValue = "id", value = "sortBy") String sortBy) {
 
-        User currentUser = userService.getById(currentUserId);
+        User currentUser = userService.getByJWT(jwt);
         PrivateChat privateChat = privateChatService.getById(privateChatId);
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, direction, sortBy);
 
         return messageService.getAllMessage(currentUser, privateChat, pageable)
-                .map(messageMapper::toDTO)
-                .map(dto -> dto.addLinks(currentUser, includeRelatedLinks));
+                .map(messageMapper::toDTO);
     }
 
     @DeleteMapping("/private-chats/{privateChatId}/messages/{messageId}/unsent")
-    public void unsent(@PathVariable("currentUserId") int currentUserId,
+    public void unsent(@RequestHeader("Authorization") String jwt,
                        @PathVariable("privateChatId") int privateChatId,
                        @PathVariable("messageId") int messageId) {
 
-        User currentUser = userService.getById(currentUserId);
+        User currentUser = userService.getByJWT(jwt);
         PrivateChat privateChat = privateChatService.getById(privateChatId);
         Message message = messageService.getById(messageId);
 
@@ -65,13 +63,12 @@ public class PrivateMessageController {
     }
 
     @PostMapping("/messages/{receiverId}")
-    public MessageDTO save(@PathVariable("currentUserId") int currentUserId,
+    public MessageDTO save(@RequestHeader("Authorization") String jwt,
                            @PathVariable("receiverId") int receiverId,
                            @RequestParam("content") String content,
-                           @RequestParam("contentType") Message.ContentType contentType,
-                           @RequestParam(defaultValue = "false", name = "includeRelatedLinks") boolean includeRelatedLinks) {
+                           @RequestParam("contentType") Message.ContentType contentType) {
 
-        User currentUser = userService.getById(currentUserId);
+        User currentUser = userService.getByJWT(jwt);
         User receiver = userService.getById(receiverId);
         String sanitizedContent = HtmlUtils.htmlEscape(content);
 
@@ -82,13 +79,13 @@ public class PrivateMessageController {
             Message message = messageService.save(currentUser, privateChat, sanitizedContent, contentType);
             MessageDTO messageDTO = messageMapper.toDTO(message);
             wsService.broadcast(privateChat, messageDTO);
-            return messageDTO.addLinks(currentUser, includeRelatedLinks);
+            return messageDTO;
         }
 
         PrivateChat privateChat = privateChatService.save(currentUser, receiver);
         Message message = messageService.save(currentUser, privateChat, sanitizedContent, contentType);
         MessageDTO messageDTO = messageMapper.toDTO(message);
         wsService.broadcast(privateChat, messageDTO);
-        return messageDTO.addLinks(currentUser, includeRelatedLinks);
+        return messageDTO;
     }
 }

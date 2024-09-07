@@ -14,7 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/users/{currentUserId}/private-chats")
+@RequestMapping("/users/private-chats")
 @RequiredArgsConstructor
 public class PrivateChatController {
     private final UserService userService;
@@ -23,26 +23,24 @@ public class PrivateChatController {
     private final PrivateChatMapper privateChatMapper;
 
     @GetMapping
-    public Page<PrivateChatDTO> getAll(@PathVariable("currentUserId") int currentUserId,
+    public Page<PrivateChatDTO> getAll(@RequestHeader("Authorization") String jwt,
                                        @RequestParam(required = false, defaultValue = "1", value = "pageNumber") int pageNumber,
                                        @RequestParam(required = false, defaultValue = "5", value = "pageSize") int pageSize,
                                        @RequestParam(required = false, defaultValue = "ASC", value = "sortDirection") Sort.Direction direction,
-                                       @RequestParam(required = false, defaultValue = "id", value = "sortBy") String sortBy,
-                                       @RequestParam(defaultValue = "false", name = "includeRelatedLinks") boolean includeRelatedLinks) {
+                                       @RequestParam(required = false, defaultValue = "id", value = "sortBy") String sortBy) {
 
-        User currentUser = userService.getById(currentUserId);
+        User currentUser = userService.getByJWT(jwt);
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, direction, sortBy);
 
         return privateChatService.getAll(currentUser, pageable)
-                .map(privateChatMapper::toDTO)
-                .map(dto -> dto.addLinks(currentUser, includeRelatedLinks));
+                .map(privateChatMapper::toDTO);
     }
 
     @DeleteMapping("/{privateChatId}")
-    public void delete(@PathVariable("currentUserId") int currentUserId,
+    public void delete(@RequestHeader("Authorization") String jwt,
                        @PathVariable("privateChatId") int privateChatId) {
 
-        User currentUser = userService.getById(currentUserId);
+        User currentUser = userService.getByJWT(jwt);
         PrivateChat privateChat = privateChatService.getById(privateChatId);
 
         privateChatService.delete(currentUser, privateChat);
