@@ -1,16 +1,10 @@
-FROM openjdk:17-alpine
-MAINTAINER Elleined
+FROM jelastic/maven:3.9.5-openjdk-21 AS build
+WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean install -DskipTests
 
-# Docker MySQL Credentials
-ENV MYSQL_HOST=mysql_server
-ENV MYSQL_USER=root
-ENV MYSQL_PASSWORD=root
-ENV MYSQL_PORT=3306
-ENV MYSQL_DATABASE=rt_message_api_db
-ENV PORT=8095
-ENV EXPIRATION=86400000
-ENV REFRESH_TOKEN_EXPIRATION=86400000
-
-ADD ./target/*.jar rt-messaging-api.jar
-EXPOSE 8095
+FROM alpine/java:21-jdk
+WORKDIR /app
+COPY --from=build /app/target/*.jar .
 CMD ["java", "-jar", "rt-messaging-api.jar"]

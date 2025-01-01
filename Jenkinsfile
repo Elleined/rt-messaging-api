@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    tools {
-        maven 'Maven 3.9.6'
-    }
-
     environment {
         DOCKERHUB_CREDENTIALS = credentials('docker-hub-access-token-for-jenkins')
     }
@@ -19,18 +15,10 @@ pipeline {
             }
         }
 
-        stage("Build project using maven") {
-            steps {
-                echo "Cleaning and Generating jar file using maven. Please Wait..."
-                sh 'mvn clean install'
-                echo "Cleaning and Generating jar file using maven. Success!"
-            }
-        }
-
         stage("Create Docker Image") {
             steps {
                 echo "Creating docker image. Please Wait..."
-                sh 'docker build -t rt-messaging-api:latest .'
+                sh 'docker build -t elleined/rt-messaging-api:latest .'
                 echo "Creating docker image. Success!"
             }
         }
@@ -46,7 +34,6 @@ pipeline {
         stage("Push docker image to DockerHub") {
             steps {
                 echo "Pushing docker image to DockerHub. Please Wait..."
-                sh 'docker tag rt-messaging-api:latest elleined/rt-messaging-api:latest'
                 sh 'docker push elleined/rt-messaging-api:latest'
                 echo "Pushing docker image to DockerHub. Success!"
             }
